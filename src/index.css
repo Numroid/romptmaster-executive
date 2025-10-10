@@ -1,0 +1,12 @@
+/* Import Apple Design System */
+@import './styles/apple-design-system.css';
+
+/* Legacy loading component - will be updated */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  font-size: var(--font-size-headline);
+  color: var(--color-text-secondary);
+}
