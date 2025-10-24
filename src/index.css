@@ -1,12 +1,12 @@
-/* Import Apple Design System */
-@import './styles/apple-design-system.css';
+/* Import Modern Learning Design System */
+@import './styles/modern-learning.css';
 
-/* Legacy loading component - will be updated */
+/* Legacy loading component - minimal styling */
 .loading {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 200px;
-  font-size: var(--font-size-headline);
-  color: var(--color-text-secondary);
+  min-height: 200px;
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
 }

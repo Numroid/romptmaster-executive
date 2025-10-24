@@ -7,9 +7,9 @@ const Dashboard = () => {
   const navigate = useNavigate()
 
   const handleLogout = () => {
-    logout({ 
+    logout({
       logoutParams: {
-        returnTo: window.location.origin 
+        returnTo: window.location.origin
       }
     })
   }
@@ -20,15 +20,14 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard" data-testid="dashboard">
-      <header className="dashboard-header">
+      {/* Clean Header */}
+      <header className="header">
         <div className="container">
           <div className="header-content">
-            <div className="logo">
-              <h2>PromptMaster Executive</h2>
-            </div>
-            <div className="user-menu">
-              <span>Welcome, {user?.name}</span>
-              <button className="btn btn-secondary" onClick={handleLogout}>
+            <h2 className="logo">PromptMaster</h2>
+            <div className="header-actions">
+              <span className="user-name">Hi, {user?.name?.split(' ')[0]}</span>
+              <button className="btn btn-secondary btn-sm" onClick={handleLogout}>
                 Sign Out
               </button>
             </div>
@@ -36,68 +35,76 @@ const Dashboard = () => {
         </div>
       </header>
 
-      <main className="dashboard-main">
+      {/* Main Content */}
+      <main className="main-content">
         <div className="container">
-          <div className="welcome-section">
-            <h1>🚀 Ready to Transform Your AI Skills?</h1>
-            <p>Your journey to prompt mastery starts here. Save 2+ hours every week with AI that actually works for you!</p>
-            <div className="value-proposition">
-              <div className="value-item">
-                <span className="value-icon">⚡</span>
-                <span>10x Faster Analysis</span>
+          {/* Welcome Section - Minimal */}
+          <section className="welcome-section">
+            <h1>Your Learning Path</h1>
+            <p className="subtitle">Master prompt engineering through real business scenarios</p>
+          </section>
+
+          {/* Progress Overview - Clean Card */}
+          <div className="progress-card card">
+            <div className="progress-header">
+              <h3>Current Progress</h3>
+              <span className="level-badge badge badge-primary">Beginner</span>
+            </div>
+
+            <div className="progress-stats">
+              <div className="stat">
+                <div className="stat-value">0</div>
+                <div className="stat-label">Scenarios Completed</div>
               </div>
-              <div className="value-item">
-                <span className="value-icon">🎯</span>
-                <span>Laser-Sharp Results</span>
+              <div className="stat">
+                <div className="stat-value">0</div>
+                <div className="stat-label">Day Streak</div>
               </div>
-              <div className="value-item">
-                <span className="value-icon">💪</span>
-                <span>Executive Confidence</span>
+              <div className="stat">
+                <div className="stat-value">0</div>
+                <div className="stat-label">Total Points</div>
+              </div>
+            </div>
+
+            <div className="progress-bar-container">
+              <div className="progress-bar-label">
+                <span>Overall Progress</span>
+                <span>0%</span>
+              </div>
+              <div className="progress">
+                <div className="progress-bar" style={{ width: '0%' }}></div>
               </div>
             </div>
           </div>
 
-          <div className="dashboard-grid">
-            <div className="card progress-card">
-              <h3>Your Progress</h3>
-              <div className="progress-overview">
-                <div className="progress-stat">
-                  <span className="stat-number">0%</span>
-                  <span className="stat-label">Complete</span>
-                </div>
-                <div className="progress-stat">
-                  <span className="stat-number">Beginner</span>
-                  <span className="stat-label">Current Level</span>
-                </div>
-                <div className="progress-stat">
-                  <span className="stat-number">0</span>
-                  <span className="stat-label">Day Streak</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="card next-action-card">
-              <h3>🎯 Start Your Mastery Journey</h3>
-              <p>Choose your first challenge and begin transforming how you work with AI</p>
-              <button className="btn btn-primary btn-xl" onClick={handleStartScenario}>
-                🚀 Launch Your First Mission
+          {/* Start Learning CTA - Prominent but Simple */}
+          <div className="cta-section">
+            <div className="cta-content">
+              <h2>Ready to start?</h2>
+              <p>Begin your first scenario and learn how to write effective prompts for business analysis</p>
+              <button className="btn btn-primary btn-lg" onClick={handleStartScenario}>
+                Start Learning
               </button>
-              <div className="time-commitment">
-                <span>⏱️ Just 10 minutes to see the difference</span>
-              </div>
+              <p className="cta-meta">Just 10 minutes to complete</p>
             </div>
+          </div>
 
-            <div className="card achievements-card">
-              <h3>🏆 Your Success Story</h3>
-              <p>Watch your expertise grow with every challenge you conquer</p>
-              <div className="achievement-placeholder">
-                <div class="achievement-preview">
-                  <div class="badge-preview">🎯</div>
-                  <div class="badge-preview">💰</div>
-                  <div class="badge-preview">⚡</div>
-                </div>
-                <p>Complete your first scenario to unlock your <strong>Prompt Pioneer</strong> badge!</p>
-              </div>
+          {/* Quick Stats - Minimal */}
+          <div className="quick-stats">
+            <div className="stat-card card">
+              <div className="stat-icon">📊</div>
+              <h4>5 Scenarios</h4>
+              <p>Real business cases to practice</p>
+            </div>
+            <div className="stat-card card">
+              <div className="stat-icon">🎯</div>
+              <h4>15+ Techniques</h4>
+              <p>Advanced prompting methods</p>
+            </div>
+            <div className="stat-card card">
+              <div className="stat-icon">⚡</div>
+              <h4>Self-Paced</h4>
+              <p>Learn at your own speed</p>
             </div>
           </div>
         </div>
@@ -106,354 +113,219 @@ const Dashboard = () => {
       <style jsx>{`
         .dashboard {
           min-height: 100vh;
-          background: var(--color-bg-secondary);
+          background: var(--bg-page);
         }
 
-        .dashboard-header {
-          background: var(--color-bg-primary);
-          border-bottom: 2px solid var(--color-neutral-200);
-          padding: var(--spacing-6) 0; /* Increased padding for executive feel */
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
+        /* Header */
+        .header {
+          background: var(--white);
+          border-bottom: 1px solid var(--gray-200);
+          padding: var(--space-4) 0;
           position: sticky;
           top: 0;
           z-index: 10;
-          box-shadow: var(--shadow-sm);
         }
 
         .header-content {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          animation: slideDown var(--duration-normal) var(--ease-out);
         }
 
-        .logo h2 {
-          color: var(--color-text-primary);
-          font-size: var(--font-size-h2);
-          font-weight: var(--font-weight-bold);
-          letter-spacing: -0.01em;
+        .logo {
+          font-size: var(--text-xl);
+          font-weight: var(--font-bold);
+          color: var(--primary);
           margin: 0;
         }
 
-        .user-menu {
+        .header-actions {
           display: flex;
           align-items: center;
-          gap: var(--spacing-5);
+          gap: var(--space-4);
         }
 
-        .user-menu span {
-          color: var(--color-text-secondary);
-          font-size: var(--font-size-body);
-          font-weight: var(--font-weight-medium);
+        .user-name {
+          font-size: var(--text-sm);
+          color: var(--text-secondary);
+          font-weight: var(--font-medium);
         }
 
-        .dashboard-main {
-          padding: var(--spacing-9) 0;
+        /* Main Content */
+        .main-content {
+          padding: var(--space-8) 0;
         }
 
+        /* Welcome Section */
         .welcome-section {
           text-align: center;
-          margin-bottom: var(--spacing-11); /* Increased spacing for executive breathing room */
-          animation: fadeIn var(--duration-slow) var(--ease-out) 0.2s both;
+          margin-bottom: var(--space-8);
         }
 
         .welcome-section h1 {
-          font-size: var(--font-size-h1); /* Executive typography scale */
-          font-weight: var(--font-weight-bold);
-          background: var(--gradient-primary);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          margin-bottom: var(--spacing-6); /* Proper spacing */
-          letter-spacing: -0.02em;
-          line-height: 1.2;
+          font-size: var(--text-4xl);
+          margin-bottom: var(--space-3);
+          color: var(--text-primary);
         }
 
-        .welcome-section p {
-          font-size: var(--font-size-h3); /* Executive hierarchy */
-          font-weight: var(--font-weight-regular);
-          color: var(--color-text-secondary);
-          max-width: 720px; /* Better reading width */
-          margin: 0 auto var(--spacing-8) auto;
-          line-height: 1.6; /* Executive line height */
-        }
-
-        .value-proposition {
-          display: flex;
-          justify-content: center;
-          gap: var(--spacing-8);
-          flex-wrap: wrap;
-        }
-
-        .value-item {
-          display: flex;
-          align-items: center;
-          gap: var(--spacing-3);
-          padding: var(--spacing-4) var(--spacing-6);
-          background: var(--color-bg-elevated);
-          border-radius: var(--radius-full);
-          border: 2px solid var(--color-primary);
-          font-weight: var(--font-weight-semibold);
-          color: var(--color-primary);
-          box-shadow: var(--shadow-md);
-          transition: all var(--duration-fast) var(--ease-out);
-        }
-
-        .value-item:hover {
-          transform: translateY(-2px);
-          box-shadow: var(--shadow-lg);
-        }
-
-        .value-icon {
-          font-size: var(--font-size-headline);
-        }
-
-        .dashboard-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-          gap: var(--spacing-8); /* Executive spacing */
-          max-width: 1200px; /* Executive content width constraint */
+        .subtitle {
+          font-size: var(--text-lg);
+          color: var(--text-secondary);
+          max-width: 600px;
           margin: 0 auto;
         }
 
+        /* Progress Card */
         .progress-card {
-          grid-column: span 2;
-          background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-          color: white;
-          position: relative;
-          overflow: hidden;
-          animation: slideUp var(--duration-slow) var(--ease-out) 0.3s both;
+          margin-bottom: var(--space-8);
+          max-width: 800px;
+          margin-left: auto;
+          margin-right: auto;
         }
 
-        .progress-card::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          right: 0;
-          width: 200px;
-          height: 200px;
-          background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-          transform: translate(50%, -50%);
-        }
-
-        .progress-card h3 {
-          position: relative;
-          z-index: 2;
-          font-size: var(--font-size-h2); /* Executive typography */
-          font-weight: var(--font-weight-semibold);
-          margin-bottom: var(--spacing-6);
-        }
-
-        .progress-overview {
+        .progress-header {
           display: flex;
-          justify-content: space-around;
-          gap: var(--spacing-6);
-          position: relative;
-          z-index: 2;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: var(--space-6);
         }
 
-        .progress-stat {
+        .progress-header h3 {
+          font-size: var(--text-xl);
+          margin: 0;
+        }
+
+        .progress-stats {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: var(--space-4);
+          margin-bottom: var(--space-6);
+          padding-bottom: var(--space-6);
+          border-bottom: 1px solid var(--gray-200);
+        }
+
+        .stat {
           text-align: center;
-          flex: 1;
         }
 
-        .stat-number {
-          display: block;
-          font-size: var(--font-size-h1); /* Executive typography */
-          font-weight: var(--font-weight-bold);
-          color: white;
-          line-height: 1.2;
-          margin-bottom: var(--spacing-3);
-          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        .stat-value {
+          font-size: var(--text-3xl);
+          font-weight: var(--font-bold);
+          color: var(--primary);
+          margin-bottom: var(--space-2);
         }
 
         .stat-label {
-          font-size: var(--font-size-subheadline);
-          color: rgba(255, 255, 255, 0.9);
-          font-weight: var(--font-weight-medium);
+          font-size: var(--text-sm);
+          color: var(--text-secondary);
         }
 
-        .next-action-card {
-          text-align: center;
-          transition: all var(--duration-normal) var(--ease-out);
-          animation: slideUp var(--duration-slow) var(--ease-out) 0.4s both;
+        .progress-bar-container {
+          margin-top: var(--space-4);
         }
 
-        .next-action-card:hover {
-          transform: translateY(-4px);
-          box-shadow: var(--shadow-xl);
-        }
-
-        .next-action-card h3 {
-          font-size: var(--font-size-h2); /* Executive typography */
-          font-weight: var(--font-weight-semibold);
-          color: var(--color-text-primary);
-          margin-bottom: var(--spacing-5);
-        }
-
-        .next-action-card p {
-          margin: var(--spacing-5) 0 var(--spacing-7) 0;
-          color: var(--color-text-secondary);
-          font-size: var(--font-size-body);
-          line-height: 1.5;
-        }
-
-        .time-commitment {
-          margin-top: var(--spacing-5);
-          padding: var(--spacing-3) var(--spacing-5);
-          background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
-          border-radius: var(--radius-full);
-          border: 1px solid rgba(16, 185, 129, 0.2);
-        }
-
-        .time-commitment span {
-          color: var(--color-success);
-          font-size: var(--font-size-subheadline);
-          font-weight: var(--font-weight-medium);
-        }
-
-        .achievements-card {
-          text-align: center;
-          animation: slideUp var(--duration-slow) var(--ease-out) 0.5s both;
-        }
-
-        .achievements-card h3 {
-          font-size: var(--font-size-h2); /* Executive typography */
-          font-weight: var(--font-weight-semibold);
-          color: var(--color-text-primary);
-          margin-bottom: var(--spacing-5);
-        }
-
-        .achievements-card p {
-          margin: var(--spacing-5) 0 var(--spacing-7) 0;
-          color: var(--color-text-secondary);
-          font-size: var(--font-size-body);
-        }
-
-        .achievement-placeholder {
-          background: linear-gradient(135deg, var(--color-neutral-100), var(--color-neutral-50));
-          border-radius: var(--radius-large);
-          padding: var(--spacing-7);
-          border: 2px dashed var(--color-neutral-300);
-          transition: all var(--duration-normal) var(--ease-out);
-          text-align: center;
-        }
-
-        .achievement-placeholder:hover {
-          border-color: var(--color-primary);
-          background: linear-gradient(135deg, rgba(0, 122, 255, 0.05), rgba(0, 122, 255, 0.02));
-        }
-
-        .achievement-preview {
+        .progress-bar-label {
           display: flex;
-          justify-content: center;
-          gap: var(--spacing-4);
-          margin-bottom: var(--spacing-5);
+          justify-content: space-between;
+          margin-bottom: var(--space-2);
+          font-size: var(--text-sm);
+          color: var(--text-secondary);
+          font-weight: var(--font-medium);
         }
 
-        .badge-preview {
-          width: 48px;
-          height: 48px;
-          border-radius: var(--radius-full);
-          background: linear-gradient(135deg, var(--color-neutral-300), var(--color-neutral-200));
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: var(--font-size-title3);
-          opacity: 0.6;
-          animation: float 3s ease-in-out infinite;
+        /* CTA Section */
+        .cta-section {
+          max-width: 600px;
+          margin: 0 auto var(--space-12) auto;
+          text-align: center;
         }
 
-        .badge-preview:nth-child(2) {
-          animation-delay: 0.5s;
+        .cta-content h2 {
+          font-size: var(--text-2xl);
+          margin-bottom: var(--space-3);
         }
 
-        .badge-preview:nth-child(3) {
-          animation-delay: 1s;
+        .cta-content p {
+          font-size: var(--text-base);
+          color: var(--text-secondary);
+          margin-bottom: var(--space-6);
+          line-height: 1.6;
         }
 
-        .achievement-placeholder p {
-          color: var(--color-text-secondary);
-          font-size: var(--font-size-body);
+        .cta-meta {
+          font-size: var(--text-sm);
+          color: var(--text-tertiary);
+          margin-top: var(--space-3);
+        }
+
+        /* Quick Stats */
+        .quick-stats {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: var(--space-4);
+          max-width: 900px;
+          margin: 0 auto;
+        }
+
+        .stat-card {
+          text-align: center;
+          padding: var(--space-6);
+        }
+
+        .stat-card:hover {
+          box-shadow: var(--shadow-md);
+          transform: translateY(-2px);
+        }
+
+        .stat-icon {
+          font-size: 2.5rem;
+          margin-bottom: var(--space-3);
+        }
+
+        .stat-card h4 {
+          font-size: var(--text-lg);
+          margin-bottom: var(--space-2);
+          color: var(--text-primary);
+        }
+
+        .stat-card p {
+          font-size: var(--text-sm);
+          color: var(--text-secondary);
           margin: 0;
-          font-style: normal;
         }
 
-        .achievement-placeholder strong {
-          color: var(--color-primary);
-          font-weight: var(--font-weight-bold);
-        }
-
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-8px); }
-        }
-
-        @keyframes slideDown {
-          from {
-            opacity: 0;
-            transform: translateY(-20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
+        /* Responsive */
         @media (max-width: 768px) {
-          .progress-card {
-            grid-column: span 1;
-          }
-          
-          .progress-overview {
-            flex-direction: column;
-            gap: var(--spacing-6);
-          }
-          
-          .header-content {
-            flex-direction: column;
-            gap: var(--spacing-5);
-            text-align: center;
+          .header-actions {
+            gap: var(--space-2);
           }
 
-          .dashboard-grid {
-            grid-template-columns: 1fr;
-            gap: var(--spacing-6);
+          .user-name {
+            display: none;
           }
 
           .welcome-section h1 {
-            font-size: var(--font-size-title1);
+            font-size: var(--text-3xl);
           }
 
-          .welcome-section p {
-            font-size: var(--font-size-headline);
+          .progress-stats {
+            grid-template-columns: 1fr;
+            gap: var(--space-6);
+          }
+
+          .quick-stats {
+            grid-template-columns: 1fr;
+            gap: var(--space-4);
+          }
+
+          .cta-content h2 {
+            font-size: var(--text-xl);
           }
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .header-content,
-          .welcome-section,
-          .progress-card,
-          .next-action-card,
-          .achievements-card {
-            animation: none;
+          .stat-card:hover {
+            transform: none;
           }
         }
       `}</style>

@@ -2,52 +2,30 @@ import React, { useState } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
 import { useNavigate } from 'react-router-dom'
 import { createUserProfile } from '../services/userService'
-import InteractiveDemo from './InteractiveDemo'
 
 const OnboardingFlow = () => {
   const { user, getAccessTokenSilently } = useAuth0()
   const navigate = useNavigate()
   const [currentStep, setCurrentStep] = useState(1)
-  const [showDemo, setShowDemo] = useState(false)
   const [formData, setFormData] = useState({
     role: '',
-    companySize: '',
-    industry: '',
     experience: ''
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const roles = [
-    { value: 'CFO', label: 'Chief Financial Officer' },
-    { value: 'VP Finance', label: 'VP Finance' },
-    { value: 'Finance Director', label: 'Finance Director' },
-    { value: 'Finance Manager', label: 'Finance Manager' },
-    { value: 'Senior Analyst', label: 'Senior Financial Analyst' },
-    { value: 'Analyst', label: 'Financial Analyst' },
-    { value: 'Other', label: 'Other Finance Role' }
-  ]
-
-  const companySizes = [
-    { value: '<100', label: 'Startup (< 100 employees)' },
-    { value: '100-1000', label: 'Small Business (100-1,000 employees)' },
-    { value: '1000-10000', label: 'Mid-Market (1,000-10,000 employees)' },
-    { value: '10000+', label: 'Enterprise (10,000+ employees)' }
-  ]
-
-  const industries = [
-    { value: 'Technology', label: 'Technology' },
-    { value: 'Financial Services', label: 'Financial Services' },
-    { value: 'Healthcare', label: 'Healthcare' },
-    { value: 'Manufacturing', label: 'Manufacturing' },
-    { value: 'Retail', label: 'Retail' },
-    { value: 'Consulting', label: 'Consulting' },
-    { value: 'Other', label: 'Other' }
+    'CFO',
+    'VP Finance',
+    'Finance Director',
+    'Finance Manager',
+    'Financial Analyst',
+    'Other'
   ]
 
   const experienceLevels = [
-    { value: 'Beginner', label: 'New to AI tools (0-6 months)' },
-    { value: 'Some Experience', label: 'Some experience (6 months - 2 years)' },
-    { value: 'Experienced', label: 'Experienced user (2+ years)' }
+    { value: 'beginner', label: 'New to AI' },
+    { value: 'intermediate', label: 'Some experience' },
+    { value: 'advanced', label: 'Experienced user' }
   ]
 
   const handleInputChange = (field, value) => {
@@ -57,256 +35,154 @@ const OnboardingFlow = () => {
     }))
   }
 
+  const canProceed = () => {
+    if (currentStep === 1) return formData.role
+    if (currentStep === 2) return formData.experience
+    return true
+  }
+
   const handleNext = () => {
-    if (currentStep < 3) {
+    if (canProceed()) {
       setCurrentStep(currentStep + 1)
     }
   }
 
   const handleBack = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1)
-    }
+    setCurrentStep(currentStep - 1)
   }
 
-  const handleStartDemo = () => {
-    setShowDemo(true)
-  }
-
-  const handleDemoComplete = () => {
-    setShowDemo(false)
-    setCurrentStep(3) // Go to final step after demo
-  }
-
-  const handleSubmit = async () => {
-    setIsSubmitting(true)
+  const handleFinish = async () => {
     try {
+      setIsSubmitting(true)
       const token = await getAccessTokenSilently()
-      
-      const profileData = {
-        auth0Id: user.sub,
+
+      // Create user profile with collected data
+      await createUserProfile({
+        userId: user.sub,
         email: user.email,
         name: user.name,
         role: formData.role,
-        companySize: formData.companySize,
-        industry: formData.industry,
-        aiExperience: formData.experience,
-        onboardingCompleted: true
-      }
+        skillLevel: formData.experience,
+        completedScenarios: [],
+        currentLevel: formData.experience,
+        totalPoints: 0,
+        achievements: []
+      }, token)
 
-      await createUserProfile(profileData, token)
+      // Navigate to dashboard
       navigate('/dashboard')
     } catch (error) {
       console.error('Error creating user profile:', error)
-      // Handle error - show message to user
-    } finally {
       setIsSubmitting(false)
+      // Still navigate to dashboard even if profile creation fails
+      navigate('/dashboard')
     }
-  }
-
-  const isStepValid = () => {
-    switch (currentStep) {
-      case 1:
-        return formData.role && formData.companySize
-      case 2:
-        return formData.industry && formData.experience
-      case 3:
-        return true // Demo completed, ready to finish
-      default:
-        return false
-    }
-  }
-
-  if (showDemo) {
-    return (
-      <div className="onboarding-container">
-        <div className="container">
-          <InteractiveDemo onComplete={handleDemoComplete} />
-        </div>
-      </div>
-    )
   }
 
   return (
-    <div className="onboarding-container" data-testid="onboarding">
-      <div className="container">
+    <div className="onboarding">
+      <div className="container-sm">
         <div className="onboarding-card">
-          <div className="progress-bar">
-            <div className="progress-steps">
-              {[1, 2, 3].map(step => (
-                <div 
-                  key={step}
-                  className={`step ${currentStep >= step ? 'active' : ''}`}
-                >
-                  {step}
-                </div>
-              ))}
+          {/* Progress Steps */}
+          <div className="steps-indicator">
+            <div className={`step ${currentStep >= 1 ? 'active' : ''} ${currentStep > 1 ? 'completed' : ''}`}>
+              <div className="step-circle">1</div>
+              <div className="step-label">Role</div>
             </div>
-            <div className="progress-line">
-              <div 
-                className="progress-fill"
-                style={{ width: `${((currentStep - 1) / 2) * 100}%` }}
-              />
+            <div className="step-line"></div>
+            <div className={`step ${currentStep >= 2 ? 'active' : ''} ${currentStep > 2 ? 'completed' : ''}`}>
+              <div className="step-circle">2</div>
+              <div className="step-label">Experience</div>
+            </div>
+            <div className="step-line"></div>
+            <div className={`step ${currentStep >= 3 ? 'active' : ''}`}>
+              <div className="step-circle">3</div>
+              <div className="step-label">Ready</div>
             </div>
           </div>
 
+          {/* Step Content */}
           <div className="step-content">
             {currentStep === 1 && (
-              <div className="step-1">
-                <h2>Welcome to PromptMaster Executive!</h2>
-                <p>Let's personalize your learning experience. First, tell us about your role.</p>
-                
-                <div className="form-group">
-                  <label className="form-label">Your Role</label>
-                  <select 
-                    className="form-select"
-                    value={formData.role}
-                    onChange={(e) => handleInputChange('role', e.target.value)}
-                  >
-                    <option value="">Select your role</option>
-                    {roles.map(role => (
-                      <option key={role.value} value={role.value}>
-                        {role.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Company Size</label>
-                  <select 
-                    className="form-select"
-                    value={formData.companySize}
-                    onChange={(e) => handleInputChange('companySize', e.target.value)}
-                  >
-                    <option value="">Select company size</option>
-                    {companySizes.map(size => (
-                      <option key={size.value} value={size.value}>
-                        {size.label}
-                      </option>
-                    ))}
-                  </select>
+              <div className="form-step">
+                <h2>What's your role?</h2>
+                <p className="step-description">Help us personalize your learning experience</p>
+                <div className="role-grid">
+                  {roles.map((role) => (
+                    <button
+                      key={role}
+                      className={`role-button ${formData.role === role ? 'selected' : ''}`}
+                      onClick={() => handleInputChange('role', role)}
+                    >
+                      {role}
+                    </button>
+                  ))}
                 </div>
               </div>
             )}
 
             {currentStep === 2 && (
-              <div className="step-2">
-                <h2>Tell us more about your background</h2>
-                <p>This helps us customize scenarios to your industry and experience level.</p>
-                
-                <div className="form-group">
-                  <label className="form-label">Industry</label>
-                  <select 
-                    className="form-select"
-                    value={formData.industry}
-                    onChange={(e) => handleInputChange('industry', e.target.value)}
-                  >
-                    <option value="">Select your industry</option>
-                    {industries.map(industry => (
-                      <option key={industry.value} value={industry.value}>
-                        {industry.label}
-                      </option>
-                    ))}
-                  </select>
+              <div className="form-step">
+                <h2>AI experience level?</h2>
+                <p className="step-description">We'll adjust the difficulty accordingly</p>
+                <div className="experience-list">
+                  {experienceLevels.map((level) => (
+                    <button
+                      key={level.value}
+                      className={`experience-button ${formData.experience === level.value ? 'selected' : ''}`}
+                      onClick={() => handleInputChange('experience', level.value)}
+                    >
+                      {level.label}
+                    </button>
+                  ))}
                 </div>
-
-                <div className="form-group">
-                  <label className="form-label">AI Experience Level</label>
-                  <select 
-                    className="form-select"
-                    value={formData.experience}
-                    onChange={(e) => handleInputChange('experience', e.target.value)}
-                  >
-                    <option value="">Select your experience level</option>
-                    {experienceLevels.map(level => (
-                      <option key={level.value} value={level.value}>
-                        {level.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {formData.industry && formData.experience && (
-                  <div className="demo-preview">
-                    <h4>Ready for a quick demo?</h4>
-                    <p>See how prompt engineering can transform your business communications with a 2-minute interactive demo using real budget analysis.</p>
-                    <ul>
-                      <li>🎯 Experience a realistic business scenario</li>
-                      <li>📝 See the difference between good and poor prompts</li>
-                      <li>⚡ Get immediate, actionable AI responses</li>
-                      <li>💡 Learn techniques you can use right away</li>
-                    </ul>
-                    <p className="demo-time">⏱️ Takes just 2 minutes</p>
-                  </div>
-                )}
               </div>
             )}
 
             {currentStep === 3 && (
-              <div className="step-3">
-                <h2>🎉 Welcome to PromptMaster Executive!</h2>
-                <p>You've completed the demo and seen the power of effective prompt engineering. Ready to start your learning journey?</p>
-                
-                <div className="completion-summary">
-                  <div className="demo-completed">
-                    <h4>✅ Demo Completed</h4>
-                    <p>You experienced how proper prompts can save 40+ minutes per analysis</p>
+              <div className="form-step welcome-step">
+                <div className="welcome-icon">🎉</div>
+                <h2>You're all set!</h2>
+                <p className="step-description">
+                  Ready to start learning prompt engineering with realistic business scenarios
+                </p>
+                <div className="summary">
+                  <div className="summary-item">
+                    <span className="summary-label">Role:</span>
+                    <span className="summary-value">{formData.role}</span>
                   </div>
-
-                  <div className="next-steps-preview">
-                    <h4>🚀 What's Next</h4>
-                    <ul>
-                      <li>Access 5 core business scenarios</li>
-                      <li>Track your progress and skill development</li>
-                      <li>Earn achievements as you master new techniques</li>
-                      <li>Get 2 scenarios completely free</li>
-                    </ul>
-                  </div>
-
-                  <div className="time-commitment">
-                    <h4>⏱️ Time Investment</h4>
-                    <p>Just 10 minutes per day • See results in your first week</p>
+                  <div className="summary-item">
+                    <span className="summary-label">Experience:</span>
+                    <span className="summary-value">{formData.experience}</span>
                   </div>
                 </div>
               </div>
             )}
           </div>
 
+          {/* Navigation Buttons */}
           <div className="step-actions">
-            {currentStep > 1 && (
-              <button 
-                className="btn btn-secondary"
-                onClick={handleBack}
-                disabled={isSubmitting}
-              >
+            {currentStep > 1 && currentStep < 3 && (
+              <button className="btn btn-secondary" onClick={handleBack}>
                 Back
               </button>
             )}
-            
-            {currentStep < 2 ? (
-              <button 
+            {currentStep < 3 && (
+              <button
                 className="btn btn-primary"
                 onClick={handleNext}
-                disabled={!isStepValid()}
+                disabled={!canProceed()}
               >
-                Next
+                Continue
               </button>
-            ) : currentStep === 2 ? (
-              <button 
-                className="btn btn-primary"
-                onClick={handleStartDemo}
-                disabled={!isStepValid()}
-              >
-                Try the Demo →
-              </button>
-            ) : (
-              <button 
-                className="btn btn-primary"
-                onClick={handleSubmit}
+            )}
+            {currentStep === 3 && (
+              <button
+                className="btn btn-primary btn-lg"
+                onClick={handleFinish}
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Setting up your account...' : 'Start Learning'}
+                {isSubmitting ? 'Setting up...' : 'Start Learning'}
               </button>
             )}
           </div>
@@ -314,346 +190,220 @@ const OnboardingFlow = () => {
       </div>
 
       <style jsx>{`
-        .onboarding-container {
+        .onboarding {
           min-height: 100vh;
-          background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+          background: var(--bg-page);
           display: flex;
           align-items: center;
-          padding: var(--spacing-9) 0;
-          position: relative;
-          overflow: hidden;
-        }
-
-        .onboarding-container::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-          pointer-events: none;
+          padding: var(--space-8) 0;
         }
 
         .onboarding-card {
-          background: var(--color-bg-primary);
-          border-radius: var(--radius-3xl);
-          padding: var(--spacing-9);
-          max-width: 640px;
+          background: var(--white);
+          border-radius: var(--radius-lg);
+          padding: var(--space-8);
+          box-shadow: var(--shadow-lg);
+          max-width: 600px;
           margin: 0 auto;
-          box-shadow: var(--shadow-2xl);
-          border: 1px solid var(--color-neutral-200);
-          position: relative;
-          z-index: 2;
-          animation: scaleIn var(--duration-slow) var(--ease-spring);
         }
 
-        .progress-bar {
-          margin-bottom: var(--spacing-9);
-          position: relative;
-        }
-
-        .progress-steps {
-          display: flex;
-          justify-content: space-between;
-          position: relative;
-          z-index: 2;
-        }
-
-        .step {
-          width: 48px;
-          height: 48px;
-          border-radius: var(--radius-full);
-          background: var(--color-neutral-200);
+        /* Steps Indicator */
+        .steps-indicator {
           display: flex;
           align-items: center;
           justify-content: center;
-          font-weight: var(--font-weight-semibold);
-          font-size: var(--font-size-body);
-          color: var(--color-text-tertiary);
-          transition: all var(--duration-normal) var(--ease-out);
-          box-shadow: var(--shadow-sm);
+          margin-bottom: var(--space-12);
         }
 
-        .step.active {
-          background: var(--color-primary);
-          color: white;
-          transform: scale(1.1);
-          box-shadow: var(--shadow-md);
+        .step {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: var(--space-2);
         }
 
-        .progress-line {
-          position: absolute;
-          top: 50%;
-          left: 24px;
-          right: 24px;
-          height: 3px;
-          background: var(--color-neutral-200);
-          transform: translateY(-50%);
-          z-index: 1;
+        .step-circle {
+          width: 40px;
+          height: 40px;
           border-radius: var(--radius-full);
+          background: var(--gray-200);
+          color: var(--text-tertiary);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: var(--font-bold);
+          transition: var(--transition);
         }
 
-        .progress-fill {
-          height: 100%;
-          background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light));
-          transition: width var(--duration-slow) var(--ease-out);
-          border-radius: var(--radius-full);
-          position: relative;
+        .step.active .step-circle {
+          background: var(--primary);
+          color: var(--white);
         }
 
-        .progress-fill::after {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-          animation: shimmer 2s infinite;
-          border-radius: var(--radius-full);
+        .step.completed .step-circle {
+          background: var(--secondary);
+          color: var(--white);
         }
 
+        .step-label {
+          font-size: var(--text-xs);
+          color: var(--text-tertiary);
+          font-weight: var(--font-medium);
+        }
+
+        .step.active .step-label {
+          color: var(--text-primary);
+        }
+
+        .step-line {
+          width: 60px;
+          height: 2px;
+          background: var(--gray-200);
+          margin: 0 var(--space-2);
+        }
+
+        /* Step Content */
         .step-content {
-          margin-bottom: var(--spacing-9);
+          margin-bottom: var(--space-8);
         }
 
-        .step-content h2 {
-          margin-bottom: var(--spacing-4);
-          color: var(--color-text-primary);
-          font-size: var(--font-size-title1);
-          font-weight: var(--font-weight-bold);
-          letter-spacing: -0.01em;
-        }
-
-        .step-content p {
-          color: var(--color-text-secondary);
-          margin-bottom: var(--spacing-7);
-          font-size: var(--font-size-body);
-          line-height: 1.6;
-        }
-
-        .demo-preview {
-          background: linear-gradient(135deg, rgba(0, 122, 255, 0.05), rgba(0, 122, 255, 0.02));
-          border-radius: var(--radius-xl);
-          padding: var(--spacing-7);
-          margin-top: var(--spacing-7);
-          border: 2px solid rgba(0, 122, 255, 0.1);
-          position: relative;
-          overflow: hidden;
-        }
-
-        .demo-preview::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 4px;
-          height: 100%;
-          background: linear-gradient(180deg, var(--color-primary), var(--color-primary-light));
-          border-radius: 0 var(--radius-small) var(--radius-small) 0;
-        }
-
-        .demo-preview h4 {
-          color: var(--color-primary);
-          margin-bottom: var(--spacing-5);
-          font-size: var(--font-size-title3);
-          font-weight: var(--font-weight-semibold);
-        }
-
-        .demo-preview ul {
-          margin: var(--spacing-5) 0;
-          padding-left: var(--spacing-6);
-        }
-
-        .demo-preview li {
-          margin: var(--spacing-3) 0;
-          color: var(--color-primary);
-          font-weight: var(--font-weight-medium);
-        }
-
-        .demo-time {
+        .form-step {
           text-align: center;
-          font-weight: var(--font-weight-semibold);
-          color: var(--color-success);
-          margin-top: var(--spacing-5);
-          padding: var(--spacing-3) var(--spacing-5);
-          background: rgba(52, 199, 89, 0.1);
-          border-radius: var(--radius-full);
-          border: 1px solid rgba(52, 199, 89, 0.2);
         }
 
-        .completion-summary {
+        .form-step h2 {
+          font-size: var(--text-3xl);
+          margin-bottom: var(--space-3);
+          color: var(--text-primary);
+        }
+
+        .step-description {
+          font-size: var(--text-base);
+          color: var(--text-secondary);
+          margin-bottom: var(--space-8);
+        }
+
+        /* Role Grid */
+        .role-grid {
           display: grid;
-          gap: var(--spacing-6);
-          margin-top: var(--spacing-7);
+          grid-template-columns: repeat(2, 1fr);
+          gap: var(--space-3);
         }
 
-        .demo-completed {
-          background: linear-gradient(135deg, rgba(52, 199, 89, 0.05), rgba(52, 199, 89, 0.02));
-          border-radius: var(--radius-xl);
-          padding: var(--spacing-6);
-          border: 2px solid rgba(52, 199, 89, 0.1);
-          text-align: center;
-          position: relative;
+        .role-button {
+          padding: var(--space-4);
+          border: 2px solid var(--gray-300);
+          background: var(--white);
+          border-radius: var(--radius);
+          font-size: var(--text-base);
+          font-weight: var(--font-medium);
+          color: var(--text-primary);
+          cursor: pointer;
+          transition: var(--transition);
         }
 
-        .demo-completed::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 4px;
-          height: 100%;
-          background: var(--color-success);
-          border-radius: 0 var(--radius-small) var(--radius-small) 0;
+        .role-button:hover {
+          border-color: var(--primary);
         }
 
-        .demo-completed h4 {
-          color: var(--color-success);
-          margin-bottom: var(--spacing-3);
-          font-size: var(--font-size-title3);
-          font-weight: var(--font-weight-semibold);
+        .role-button.selected {
+          border-color: var(--primary);
+          background: var(--primary-light);
+          color: var(--primary);
         }
 
-        .demo-completed p {
-          color: var(--color-success);
-          font-weight: var(--font-weight-medium);
+        /* Experience List */
+        .experience-list {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-3);
         }
 
-        .next-steps-preview {
-          background: var(--color-bg-secondary);
-          border-radius: var(--radius-xl);
-          padding: var(--spacing-6);
-          border: 2px solid var(--color-neutral-200);
-          position: relative;
+        .experience-button {
+          padding: var(--space-4);
+          border: 2px solid var(--gray-300);
+          background: var(--white);
+          border-radius: var(--radius);
+          font-size: var(--text-base);
+          font-weight: var(--font-medium);
+          color: var(--text-primary);
+          cursor: pointer;
+          transition: var(--transition);
+          text-align: left;
         }
 
-        .next-steps-preview::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 4px;
-          height: 100%;
-          background: linear-gradient(180deg, var(--color-primary), var(--color-primary-light));
-          border-radius: 0 var(--radius-small) var(--radius-small) 0;
+        .experience-button:hover {
+          border-color: var(--primary);
         }
 
-        .next-steps-preview h4 {
-          color: var(--color-primary);
-          margin-bottom: var(--spacing-4);
-          font-size: var(--font-size-title3);
-          font-weight: var(--font-weight-semibold);
+        .experience-button.selected {
+          border-color: var(--primary);
+          background: var(--primary-light);
+          color: var(--primary);
         }
 
-        .next-steps-preview ul {
-          margin: 0;
-          padding-left: var(--spacing-6);
+        /* Welcome Step */
+        .welcome-step {
+          padding: var(--space-8) 0;
         }
 
-        .next-steps-preview li {
-          margin: var(--spacing-2) 0;
-          color: var(--color-text-secondary);
-          font-weight: var(--font-weight-medium);
+        .welcome-icon {
+          font-size: 4rem;
+          margin-bottom: var(--space-4);
         }
 
-        .time-commitment {
-          background: linear-gradient(135deg, rgba(255, 149, 0, 0.05), rgba(255, 149, 0, 0.02));
-          border-radius: var(--radius-xl);
-          padding: var(--spacing-6);
-          border: 2px solid rgba(255, 149, 0, 0.1);
-          text-align: center;
-          position: relative;
+        .summary {
+          margin-top: var(--space-8);
+          padding: var(--space-6);
+          background: var(--gray-50);
+          border-radius: var(--radius);
+          text-align: left;
         }
 
-        .time-commitment::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 4px;
-          height: 100%;
-          background: var(--color-warning);
-          border-radius: 0 var(--radius-small) var(--radius-small) 0;
-        }
-
-        .time-commitment h4 {
-          color: var(--color-warning);
-          margin-bottom: var(--spacing-3);
-          font-size: var(--font-size-title3);
-          font-weight: var(--font-weight-semibold);
-        }
-
-        .time-commitment p {
-          color: var(--color-warning);
-          font-weight: var(--font-weight-semibold);
-        }
-
-        .step-actions {
+        .summary-item {
           display: flex;
           justify-content: space-between;
-          gap: var(--spacing-5);
+          margin-bottom: var(--space-3);
         }
 
-        .step-actions .btn {
-          flex: 1;
-          transition: all var(--duration-fast) var(--ease-out);
+        .summary-item:last-child {
+          margin-bottom: 0;
         }
 
-        @keyframes scaleIn {
-          from {
-            opacity: 0;
-            transform: scale(0.95);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
+        .summary-label {
+          font-weight: var(--font-medium);
+          color: var(--text-secondary);
         }
 
-        @keyframes shimmer {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(100%); }
+        .summary-value {
+          font-weight: var(--font-semibold);
+          color: var(--text-primary);
+          text-transform: capitalize;
         }
 
+        /* Step Actions */
+        .step-actions {
+          display: flex;
+          gap: var(--space-3);
+          justify-content: center;
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
           .onboarding-card {
-            margin: var(--spacing-6);
-            padding: var(--spacing-7);
-          }
-          
-          .step-actions {
-            flex-direction: column;
+            padding: var(--space-6);
           }
 
-          .step-content h2 {
-            font-size: var(--font-size-title2);
+          .form-step h2 {
+            font-size: var(--text-2xl);
           }
 
-          .step {
+          .role-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .step-line {
             width: 40px;
-            height: 40px;
-            font-size: var(--font-size-subheadline);
-          }
-
-          .progress-line {
-            left: 20px;
-            right: 20px;
-          }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .onboarding-card {
-            animation: none;
-          }
-          
-          .progress-fill::after {
-            animation: none;
-          }
-          
-          .step.active {
-            transform: none;
           }
         }
       `}</style>
