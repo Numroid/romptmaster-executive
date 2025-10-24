@@ -14,74 +14,104 @@ const LandingPage = () => {
 
   return (
     <div className="landing-page" data-testid="landing-page">
-      <header className="hero-section">
+      {/* Hero Section */}
+      <section className="hero">
         <div className="container">
-          <nav className="navbar">
-            <div className="logo">
-              <h2>PromptMaster Executive</h2>
-            </div>
-            <div className="nav-actions">
-              <button 
-                className="btn btn-secondary"
-                onClick={() => loginWithRedirect()}
-              >
-                Sign In
-              </button>
-            </div>
+          <nav className="nav">
+            <h2 className="logo">PromptMaster</h2>
+            <button
+              className="btn btn-ghost"
+              onClick={() => loginWithRedirect()}
+            >
+              Sign In
+            </button>
           </nav>
-          
-          <div className="hero-content">
-            <h1>Master AI Prompts for Business Success</h1>
-            <p className="hero-subtitle">
-              Transform your AI productivity with gamified prompt engineering training 
-              designed specifically for finance and business leaders.
-            </p>
-            
-            <div className="roi-calculator">
-              <div className="card">
-                <h3>Calculate Your Time Savings</h3>
-                <div className="savings-display">
-                  <div className="metric">
-                    <span className="number">10</span>
-                    <span className="label">Hours saved per week</span>
-                  </div>
-                  <div className="metric">
-                    <span className="number">300%</span>
-                    <span className="label">Productivity increase</span>
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            <div className="cta-section">
-              <button 
-                className="btn btn-primary btn-large"
+          <div className="hero-content">
+            <h1>Master Prompt Engineering for Business</h1>
+            <p className="subtitle">
+              Learn to write effective AI prompts through realistic business scenarios.
+              Built for finance and business leaders.
+            </p>
+            <div className="cta-buttons">
+              <button
+                className="btn btn-primary btn-xl"
                 onClick={handleLogin}
               >
-                Start Free Trial
+                Start Learning Free
               </button>
-              <p className="cta-subtitle">No credit card required • 2 scenarios free</p>
+            </div>
+            <p className="cta-note">No credit card required</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="features">
+        <div className="container">
+          <h2>What You'll Learn</h2>
+          <div className="feature-grid">
+            <div className="feature-card card">
+              <div className="feature-icon">📊</div>
+              <h3>Real Business Scenarios</h3>
+              <p>Practice with budget analysis, risk assessment, and strategic planning tasks</p>
+            </div>
+            <div className="feature-card card">
+              <div className="feature-icon">🎯</div>
+              <h3>Practical Skills</h3>
+              <p>Learn techniques you can apply immediately to your daily work</p>
+            </div>
+            <div className="feature-card card">
+              <div className="feature-icon">⚡</div>
+              <h3>Self-Paced Learning</h3>
+              <p>Complete scenarios at your own speed, 10-15 minutes each</p>
             </div>
           </div>
         </div>
-      </header>
+      </section>
 
-      <section className="features-section">
-        <div className="container">
-          <h2>Why Finance Leaders Choose PromptMaster</h2>
-          <div className="features-grid">
-            <div className="feature">
-              <h3>🎯 Business-Focused Scenarios</h3>
-              <p>Practice with realistic budget analysis, risk assessment, and board presentation contexts</p>
+      {/* How It Works */}
+      <section className="how-it-works">
+        <div className="container-sm">
+          <h2>How It Works</h2>
+          <div className="steps">
+            <div className="step">
+              <div className="step-number">1</div>
+              <div className="step-content">
+                <h3>Choose a Scenario</h3>
+                <p>Select from 5 realistic business scenarios</p>
+              </div>
             </div>
-            <div className="feature">
-              <h3>📊 Immediate ROI</h3>
-              <p>See measurable time savings and productivity improvements from day one</p>
+            <div className="step">
+              <div className="step-number">2</div>
+              <div className="step-content">
+                <h3>Write Your Prompt</h3>
+                <p>Practice crafting effective prompts with guidance</p>
+              </div>
             </div>
-            <div className="feature">
-              <h3>🏆 Gamified Learning</h3>
-              <p>Stay motivated with achievements, progress tracking, and peer comparisons</p>
+            <div className="step">
+              <div className="step-number">3</div>
+              <div className="step-content">
+                <h3>Get Feedback</h3>
+                <p>Learn what makes prompts effective</p>
+              </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="final-cta">
+        <div className="container-sm">
+          <div className="cta-box">
+            <h2>Ready to get started?</h2>
+            <p>Join business leaders learning to work more effectively with AI</p>
+            <button
+              className="btn btn-primary btn-lg"
+              onClick={handleLogin}
+            >
+              Start Learning Free
+            </button>
           </div>
         </div>
       </section>
@@ -89,240 +119,216 @@ const LandingPage = () => {
       <style jsx>{`
         .landing-page {
           min-height: 100vh;
-          background: var(--color-bg-secondary);
+          background: var(--bg-page);
         }
 
-        .hero-section {
-          background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-          color: white;
-          padding: 0 0 var(--spacing-16) 0;
-          position: relative;
-          overflow: hidden;
+        /* Hero Section */
+        .hero {
+          background: var(--white);
+          padding: var(--space-4) 0 var(--space-16) 0;
+          border-bottom: 1px solid var(--gray-200);
         }
 
-        .hero-section::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-          pointer-events: none;
-        }
-
-        .navbar {
+        .nav {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: var(--spacing-6) 0;
-          position: relative;
-          z-index: 2;
+          margin-bottom: var(--space-12);
         }
 
-        .logo h2 {
-          font-size: var(--font-size-h2); /* Executive typography */
-          font-weight: var(--font-weight-bold);
-          letter-spacing: -0.01em;
+        .logo {
+          font-size: var(--text-2xl);
+          font-weight: var(--font-bold);
+          color: var(--primary);
           margin: 0;
         }
 
         .hero-content {
           text-align: center;
-          padding: var(--spacing-12) 0;
-          position: relative;
-          z-index: 2;
+          max-width: 800px;
+          margin: 0 auto;
         }
 
         .hero-content h1 {
-          font-size: var(--font-size-h1); /* Executive typography scale */
-          font-weight: var(--font-weight-bold);
-          margin-bottom: var(--spacing-6);
-          line-height: 1.2; /* Executive line height */
-          letter-spacing: -0.02em;
-          animation: slideUp var(--duration-slow) var(--ease-out);
-        }
-
-        .hero-subtitle {
-          font-size: var(--font-size-h3); /* Executive hierarchy */
-          font-weight: var(--font-weight-regular);
-          margin-bottom: var(--spacing-9);
-          opacity: 0.95;
-          max-width: 720px; /* Executive reading width */
-          margin-left: auto;
-          margin-right: auto;
-          line-height: 1.6; /* Executive line height */
-          animation: slideUp var(--duration-slow) var(--ease-out) 0.1s both;
-        }
-
-        .roi-calculator {
-          margin: var(--spacing-9) 0;
-          max-width: 500px;
-          margin-left: auto;
-          margin-right: auto;
-          animation: slideUp var(--duration-slow) var(--ease-out) 0.2s both;
-        }
-
-        .roi-calculator .card {
-          background: var(--glass-bg);
-          backdrop-filter: var(--glass-backdrop);
-          -webkit-backdrop-filter: var(--glass-backdrop);
-          border: 1px solid var(--glass-border);
-          box-shadow: var(--shadow-2xl);
-          transition: all var(--duration-normal) var(--ease-out);
-        }
-
-        .roi-calculator .card:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.4);
-        }
-
-        .roi-calculator h3 {
-          margin-bottom: var(--spacing-6);
-          text-align: center;
-          font-size: var(--font-size-h3); /* Executive typography */
-          font-weight: var(--font-weight-semibold);
-        }
-
-        .savings-display {
-          display: flex;
-          justify-content: space-around;
-          gap: var(--spacing-6);
-        }
-
-        .metric {
-          text-align: center;
-          flex: 1;
-        }
-
-        .metric .number {
-          display: block;
-          font-size: var(--font-size-h1); /* Executive typography */
-          font-weight: var(--font-weight-bold);
-          color: var(--color-warning);
+          font-size: var(--text-4xl);
+          margin-bottom: var(--space-6);
+          color: var(--text-primary);
           line-height: 1.2;
-          margin-bottom: var(--spacing-3);
-          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .metric .label {
-          font-size: var(--font-size-footnote);
-          opacity: 0.9;
-          font-weight: var(--font-weight-medium);
-        }
-
-        .cta-section {
-          margin-top: var(--spacing-9);
-          animation: slideUp var(--duration-slow) var(--ease-out) 0.3s both;
-        }
-
-        .cta-subtitle {
-          margin-top: var(--spacing-4);
-          opacity: 0.9;
-          font-size: var(--font-size-subheadline);
-        }
-
-        .features-section {
-          padding: var(--spacing-16) 0;
-          background: var(--color-bg-primary);
-          position: relative;
-        }
-
-        .features-section::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 1px;
-          background: linear-gradient(90deg, transparent, var(--color-neutral-200), transparent);
-        }
-
-        .features-section h2 {
-          text-align: center;
-          margin-bottom: var(--spacing-12);
-          font-size: var(--font-size-h1); /* Executive typography */
-          font-weight: var(--font-weight-bold);
-          color: var(--color-text-primary);
-          letter-spacing: -0.02em;
-        }
-
-        .features-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-          gap: var(--spacing-9);
-        }
-
-        .feature {
-          text-align: center;
-          padding: var(--spacing-7);
-          background: var(--color-bg-elevated);
-          border-radius: var(--radius-2xl);
-          box-shadow: var(--shadow-base);
-          transition: all var(--duration-normal) var(--ease-out);
-          border: 1px solid var(--color-neutral-200);
-        }
-
-        .feature:hover {
-          transform: translateY(-4px);
-          box-shadow: var(--shadow-xl);
-          border-color: var(--color-primary);
-        }
-
-        .feature h3 {
-          font-size: var(--font-size-h2); /* Executive typography */
-          font-weight: var(--font-weight-semibold);
-          margin-bottom: var(--spacing-5);
-          color: var(--color-text-primary);
-        }
-
-        .feature p {
-          color: var(--color-text-secondary);
+        .subtitle {
+          font-size: var(--text-xl);
+          color: var(--text-secondary);
+          margin-bottom: var(--space-8);
           line-height: 1.6;
-          font-size: var(--font-size-body);
         }
 
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+        .cta-buttons {
+          margin-bottom: var(--space-3);
         }
 
+        .cta-note {
+          font-size: var(--text-sm);
+          color: var(--text-tertiary);
+        }
+
+        /* Features Section */
+        .features {
+          padding: var(--space-16) 0;
+          background: var(--bg-page);
+        }
+
+        .features h2 {
+          text-align: center;
+          font-size: var(--text-3xl);
+          margin-bottom: var(--space-12);
+          color: var(--text-primary);
+        }
+
+        .feature-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: var(--space-6);
+        }
+
+        .feature-card {
+          text-align: center;
+          padding: var(--space-8) var(--space-6);
+        }
+
+        .feature-icon {
+          font-size: 3rem;
+          margin-bottom: var(--space-4);
+        }
+
+        .feature-card h3 {
+          font-size: var(--text-xl);
+          margin-bottom: var(--space-3);
+          color: var(--text-primary);
+        }
+
+        .feature-card p {
+          font-size: var(--text-base);
+          color: var(--text-secondary);
+          line-height: 1.6;
+          margin: 0;
+        }
+
+        /* How It Works */
+        .how-it-works {
+          padding: var(--space-16) 0;
+          background: var(--white);
+        }
+
+        .how-it-works h2 {
+          text-align: center;
+          font-size: var(--text-3xl);
+          margin-bottom: var(--space-12);
+          color: var(--text-primary);
+        }
+
+        .steps {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-8);
+        }
+
+        .step {
+          display: flex;
+          gap: var(--space-6);
+          align-items: flex-start;
+        }
+
+        .step-number {
+          width: 48px;
+          height: 48px;
+          background: var(--primary);
+          color: var(--white);
+          border-radius: var(--radius-full);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: var(--text-xl);
+          font-weight: var(--font-bold);
+          flex-shrink: 0;
+        }
+
+        .step-content h3 {
+          font-size: var(--text-xl);
+          margin-bottom: var(--space-2);
+          color: var(--text-primary);
+        }
+
+        .step-content p {
+          font-size: var(--text-base);
+          color: var(--text-secondary);
+          margin: 0;
+          line-height: 1.6;
+        }
+
+        /* Final CTA */
+        .final-cta {
+          padding: var(--space-16) 0;
+          background: var(--bg-page);
+        }
+
+        .cta-box {
+          text-align: center;
+          padding: var(--space-12) var(--space-8);
+          background: var(--primary);
+          border-radius: var(--radius-xl);
+          color: var(--white);
+        }
+
+        .cta-box h2 {
+          font-size: var(--text-3xl);
+          margin-bottom: var(--space-4);
+          color: var(--white);
+        }
+
+        .cta-box p {
+          font-size: var(--text-lg);
+          margin-bottom: var(--space-8);
+          opacity: 0.9;
+        }
+
+        .cta-box .btn {
+          background: var(--white);
+          color: var(--primary);
+          border-color: var(--white);
+        }
+
+        .cta-box .btn:hover {
+          background: var(--gray-50);
+          border-color: var(--gray-50);
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
           .hero-content h1 {
-            font-size: var(--font-size-title1);
-          }
-          
-          .hero-subtitle {
-            font-size: var(--font-size-headline);
-          }
-          
-          .savings-display {
-            flex-direction: column;
-            gap: var(--spacing-6);
+            font-size: var(--text-3xl);
           }
 
-          .features-grid {
+          .subtitle {
+            font-size: var(--text-lg);
+          }
+
+          .feature-grid {
             grid-template-columns: 1fr;
-            gap: var(--spacing-6);
+            gap: var(--space-4);
           }
 
-          .feature {
-            padding: var(--spacing-6);
+          .step {
+            flex-direction: column;
+            gap: var(--space-3);
           }
-        }
 
-        @media (prefers-reduced-motion: reduce) {
-          .hero-content h1,
-          .hero-subtitle,
-          .roi-calculator,
-          .cta-section {
-            animation: none;
+          .cta-box {
+            padding: var(--space-8) var(--space-6);
+          }
+
+          .cta-box h2 {
+            font-size: var(--text-2xl);
           }
         }
       `}</style>

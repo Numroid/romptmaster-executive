@@ -1,15 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth0 } from '@auth0/auth0-react'
-import { 
-  mockGetScenarioById,
-  getDifficultyColor,
-  getCategoryIcon,
-  formatEstimatedTime
-} from '../services/scenarioService'
+import { mockGetScenarioById } from '../services/scenarioService'
 import LoadingSpinner from './LoadingSpinner'
-import PromptBuilder from './PromptBuilder'
-import AdaptivePromptBuilder from './AdaptivePromptBuilder'
+import { useNotification } from './ui/Notification'
 
 const ScenarioPlayer = () => {
   const [scenario, setScenario] = useState(null)
@@ -18,14 +12,11 @@ const ScenarioPlayer = () => {
   const [userPrompt, setUserPrompt] = useState('')
   const [showHints, setShowHints] = useState(false)
   const [currentHintIndex, setCurrentHintIndex] = useState(0)
-  const [useStructuredBuilder, setUseStructuredBuilder] = useState(true)
-  const [useAdaptiveBuilder, setUseAdaptiveBuilder] = useState(true)
-  const [progress, setProgress] = useState(0)
-  const [encouragementMessage, setEncouragementMessage] = useState('')
-  
+
   const { scenarioId } = useParams()
   const navigate = useNavigate()
   const { user } = useAuth0()
+  const { showNotification, NotificationContainer } = useNotification()
 
   useEffect(() => {
     loadScenario()
@@ -45,18 +36,14 @@ const ScenarioPlayer = () => {
     }
   }
 
-  const handleBackToSelection = () => {
-    navigate('/scenarios')
-  }
-
   const handlePromptSubmit = () => {
     if (!userPrompt.trim()) {
-      alert('Please enter a prompt before submitting.')
+      showNotification('Please enter a prompt before submitting', 'warning')
       return
     }
-    
-    // For now, just show an alert - this will be connected to AI service in future tasks
-    alert('Prompt submitted! AI integration will be implemented in the next task.')
+
+    // For now, show success notification - AI integration comes later
+    showNotification('Prompt submitted! AI evaluation will be implemented soon.', 'success')
     console.log('User prompt:', userPrompt)
     console.log('Scenario context:', scenario.businessContext)
   }
@@ -67,43 +54,17 @@ const ScenarioPlayer = () => {
     }
   }
 
-  const handlePromptChange = (prompt) => {
-    setUserPrompt(prompt)
-    updateProgress(prompt)
-    updateEncouragement(prompt)
-  }
-
-  const handleTextareaChange = (e) => {
-    setUserPrompt(e.target.value)
-    updateProgress(e.target.value)
-    updateEncouragement(e.target.value)
-  }
-
-  const updateProgress = (prompt) => {
-    const wordCount = prompt.split(' ').filter(word => word.length > 0).length
-    const hasSpecifics = prompt.includes('specific') || prompt.includes('detailed') || prompt.includes('analyze')
-    const hasFormat = prompt.includes('format') || prompt.includes('list') || prompt.includes('summary')
-    
-    let newProgress = Math.min((wordCount / 20) * 60, 60)
-    if (hasSpecifics) newProgress += 20
-    if (hasFormat) newProgress += 20
-    
-    setProgress(Math.min(newProgress, 100))
-  }
-
-  const updateEncouragement = (prompt) => {
-    const messages = [
-      "You're getting the hang of this! 🚀",
-      "Excellent progress! Keep going! ⭐",
-      "Almost there! Your prompt is looking great! 💪",
-      "Fantastic work! You're mastering this! 🎉",
-      "Perfect! You're becoming a prompt expert! 🏆"
-    ]
-    
-    const progressLevel = Math.floor(progress / 20)
-    if (progressLevel > 0 && progressLevel <= messages.length) {
-      setEncouragementMessage(messages[progressLevel - 1])
+  const getDifficultyColor = (difficulty) => {
+    const colors = {
+      beginner: 'var(--secondary)',
+      intermediate: 'var(--accent)',
+      advanced: 'var(--error)'
     }
+    return colors[difficulty] || 'var(--gray-500)'
+  }
+
+  const getWordCount = () => {
+    return userPrompt.split(' ').filter(word => word.length > 0).length
   }
 
   if (loading) {
@@ -112,12 +73,12 @@ const ScenarioPlayer = () => {
 
   if (error || !scenario) {
     return (
-      <div className="scenario-error">
+      <div className="error-page">
         <div className="container">
           <div className="error-content">
             <h2>Scenario Not Found</h2>
             <p>{error}</p>
-            <button className="btn btn-primary" onClick={handleBackToSelection}>
+            <button className="btn btn-primary" onClick={() => navigate('/scenarios')}>
               Back to Scenarios
             </button>
           </div>
@@ -127,825 +88,448 @@ const ScenarioPlayer = () => {
   }
 
   return (
-    <div className="scenario-player">
-      <header className="scenario-header">
-        <div className="container">
-          <div className="header-content">
-            <div className="header-left">
-              <button className="back-button" onClick={handleBackToSelection}>
-                ← Back to Scenarios
-              </button>
-              <div className="scenario-info">
-                <div className="scenario-title">
-                  <span className="scenario-icon">{getCategoryIcon(scenario.category)}</span>
+    <>
+      <NotificationContainer />
+      <div className="scenario-player">
+        {/* Header */}
+        <header className="header">
+          <div className="container">
+            <div className="header-content">
+              <div className="header-left">
+                <button
+                  className="btn btn-ghost btn-sm"
+                  onClick={() => navigate('/scenarios')}
+                >
+                  ← Back
+                </button>
+                <div className="scenario-info">
                   <h1>{scenario.title}</h1>
-                </div>
-                <div className="scenario-meta">
-                  <span 
-                    className="difficulty-badge"
-                    style={{ backgroundColor: getDifficultyColor(scenario.difficulty) }}
-                  >
-                    {scenario.difficulty}
-                  </span>
-                  <span className="time-estimate">
-                    {formatEstimatedTime(scenario.estimatedTime)}
-                  </span>
+                  <div className="meta">
+                    <span
+                      className="difficulty-badge"
+                      style={{ backgroundColor: getDifficultyColor(scenario.difficulty) }}
+                    >
+                      {scenario.difficulty}
+                    </span>
+                    <span className="time">{scenario.estimatedTime} min</span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="user-info">
-              <span>Welcome, {user?.name}</span>
             </div>
           </div>
-        </div>
-      </header>
+        </header>
 
-      <main className="scenario-main">
-        <div className="container">
-          <div className="scenario-layout">
-            <div className="context-panel">
-              <div className="panel-header">
-                <h2>Business Context</h2>
-              </div>
-              <div className="panel-content">
-                <div className="context-description">
-                  <p>{scenario.businessContext}</p>
+        {/* Main Content - Two Column Layout */}
+        <main className="main-content">
+          <div className="container-lg">
+            <div className="content-grid">
+              {/* Left: Context */}
+              <aside className="context-panel">
+                <div className="panel-section">
+                  <h2>Business Context</h2>
+                  <div className="context-text">
+                    {scenario.businessContext.split('\n\n').map((paragraph, idx) => (
+                      <p key={idx}>{paragraph}</p>
+                    ))}
+                  </div>
                 </div>
 
                 {scenario.sampleDocuments && scenario.sampleDocuments.length > 0 && (
-                  <div className="sample-documents">
+                  <div className="panel-section">
                     <h3>Reference Documents</h3>
                     {scenario.sampleDocuments.map((doc, index) => (
-                      <div key={index} className="document-card">
+                      <div key={index} className="document">
                         <div className="document-header">
-                          <span className="document-type">{doc.type}</span>
-                          <span className="document-title">{doc.title}</span>
+                          <span className="doc-type">{doc.type}</span>
+                          <span className="doc-title">{doc.title}</span>
                         </div>
-                        <div className="document-content">
-                          <pre>{doc.content}</pre>
-                        </div>
+                        <pre className="document-content">{doc.content}</pre>
                       </div>
                     ))}
                   </div>
                 )}
-              </div>
-            </div>
 
-            <div className="task-panel">
-              <div className="panel-header">
-                <h2>Your Task</h2>
-              </div>
-              <div className="panel-content">
-                <div className="objective-section">
-                  <h3>Objective</h3>
-                  <p>{scenario.objective}</p>
-                </div>
+                {/* Hints Section */}
+                {scenario.hints && scenario.hints.length > 0 && (
+                  <div className="panel-section">
+                    <button
+                      className="btn btn-secondary btn-sm"
+                      onClick={() => setShowHints(!showHints)}
+                    >
+                      {showHints ? 'Hide' : 'Show'} Hints ({scenario.hints.length})
+                    </button>
 
-                <div className="prompt-section">
-                  <div className="prompt-header">
-                    <h3>Craft Your Perfect Prompt</h3>
-                    <div className="prompt-mode-toggle">
-                      <button 
-                        className={`mode-button ${useAdaptiveBuilder ? 'active' : ''}`}
-                        onClick={() => {
-                          setUseAdaptiveBuilder(true)
-                          setUseStructuredBuilder(true)
-                        }}
-                      >
-                        🧠 Adaptive Builder
-                      </button>
-                      <button 
-                        className={`mode-button ${useStructuredBuilder && !useAdaptiveBuilder ? 'active' : ''}`}
-                        onClick={() => {
-                          setUseAdaptiveBuilder(false)
-                          setUseStructuredBuilder(true)
-                        }}
-                      >
-                        🏗️ Basic Builder
-                      </button>
-                      <button 
-                        className={`mode-button ${!useStructuredBuilder ? 'active' : ''}`}
-                        onClick={() => {
-                          setUseStructuredBuilder(false)
-                          setUseAdaptiveBuilder(false)
-                        }}
-                      >
-                        ✍️ Free Write
-                      </button>
-                    </div>
-                  </div>
-
-                  {progress > 0 && (
-                    <div className="progress-section">
-                      <div className="progress-bar">
-                        <div 
-                          className="progress-fill progress-celebration" 
-                          style={{ width: `${progress}%` }}
-                        ></div>
-                      </div>
-                      <div className="progress-text">
-                        <span>Progress: {Math.round(progress)}%</span>
-                        {encouragementMessage && (
-                          <span className="encouragement">{encouragementMessage}</span>
+                    {showHints && (
+                      <div className="hints-box">
+                        <div className="hint">
+                          <p>{scenario.hints[currentHintIndex]}</p>
+                        </div>
+                        {currentHintIndex < scenario.hints.length - 1 && (
+                          <button
+                            className="btn btn-ghost btn-sm"
+                            onClick={handleShowNextHint}
+                          >
+                            Next Hint ({currentHintIndex + 1}/{scenario.hints.length})
+                          </button>
                         )}
                       </div>
-                    </div>
-                  )}
-
-                  {useStructuredBuilder ? (
-                    useAdaptiveBuilder ? (
-                      <AdaptivePromptBuilder 
-                        onPromptChange={handlePromptChange}
-                        initialPrompt={userPrompt}
-                        difficulty={scenario.difficulty}
-                        category={scenario.category}
-                        userLevel={scenario.requiredLevel}
-                      />
-                    ) : (
-                      <PromptBuilder 
-                        onPromptChange={handlePromptChange}
-                        initialPrompt={userPrompt}
-                      />
-                    )
-                  ) : (
-                    <div className="freewrite-section">
-                      <textarea
-                        value={userPrompt}
-                        onChange={handleTextareaChange}
-                        placeholder="Write your prompt here... Be specific about what you want the AI to analyze and how you want the output formatted."
-                        className="prompt-textarea"
-                        rows={8}
-                      />
-                      <div className="prompt-meta">
-                        <span className="character-count">
-                          {userPrompt.length} characters
-                        </span>
-                        <span className="word-count">
-                          {userPrompt.split(' ').filter(word => word.length > 0).length} words
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="action-section">
-                  <button 
-                    className="btn btn-primary submit-button"
-                    onClick={handlePromptSubmit}
-                    disabled={!userPrompt.trim()}
-                  >
-                    Submit Prompt
-                  </button>
-                  
-                  <button 
-                    className="btn btn-secondary hint-button"
-                    onClick={() => setShowHints(!showHints)}
-                  >
-                    💡 {showHints ? 'Hide' : 'Show'} Hints
-                  </button>
-                </div>
-
-                {showHints && scenario.hints && scenario.hints.length > 0 && (
-                  <div className="hints-section">
-                    <h3>Hints</h3>
-                    <div className="hint-card">
-                      <p>{scenario.hints[currentHintIndex]}</p>
-                      {currentHintIndex < scenario.hints.length - 1 && (
-                        <button 
-                          className="btn btn-outline next-hint-button"
-                          onClick={handleShowNextHint}
-                        >
-                          Next Hint ({currentHintIndex + 1}/{scenario.hints.length})
-                        </button>
-                      )}
-                      {currentHintIndex === scenario.hints.length - 1 && (
-                        <p className="hint-complete">
-                          You've seen all available hints ({scenario.hints.length}/{scenario.hints.length})
-                        </p>
-                      )}
-                    </div>
+                    )}
                   </div>
                 )}
+              </aside>
 
+              {/* Right: Task & Prompt Builder */}
+              <section className="task-panel">
+                <div className="panel-section">
+                  <h2>Your Task</h2>
+                  <div className="objective">
+                    <p>{scenario.objective}</p>
+                  </div>
+                </div>
+
+                <div className="panel-section">
+                  <h3>Write Your Prompt</h3>
+                  <textarea
+                    value={userPrompt}
+                    onChange={(e) => setUserPrompt(e.target.value)}
+                    placeholder="Write a clear, specific prompt that will help you accomplish this task..."
+                    className="prompt-editor"
+                    rows={12}
+                  />
+
+                  <div className="editor-meta">
+                    <span className="word-count">{getWordCount()} words</span>
+                    <span className="char-count">{userPrompt.length} characters</span>
+                  </div>
+                </div>
+
+                {/* Success Criteria */}
                 {scenario.successCriteria && scenario.successCriteria.length > 0 && (
-                  <div className="success-criteria">
+                  <div className="panel-section">
                     <h3>Success Criteria</h3>
-                    <ul>
+                    <ul className="criteria-list">
                       {scenario.successCriteria.map((criteria, index) => (
                         <li key={index}>{criteria}</li>
                       ))}
                     </ul>
                   </div>
                 )}
-              </div>
+
+                {/* Submit Button */}
+                <div className="panel-section">
+                  <button
+                    className="btn btn-primary btn-lg"
+                    onClick={handlePromptSubmit}
+                    disabled={!userPrompt.trim()}
+                    style={{ width: '100%' }}
+                  >
+                    Submit Prompt
+                  </button>
+                </div>
+              </section>
             </div>
           </div>
-        </div>
-      </main>
-
-      <style jsx>{`
-        .scenario-player {
-          min-height: 100vh;
-          background: var(--color-bg-secondary);
-        }
-
-        .scenario-header {
-          background: var(--color-bg-primary);
-          border-bottom: 1px solid var(--color-neutral-200);
-          padding: var(--spacing-7) 0;
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-          position: sticky;
-          top: 0;
-          z-index: 10;
-        }
-
-        .header-content {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          animation: slideDown var(--duration-normal) var(--ease-out);
-        }
-
-        .header-left {
-          display: flex;
-          align-items: center;
-          gap: var(--spacing-7);
-        }
-
-        .back-button {
-          background: none;
-          border: none;
-          color: var(--color-primary);
-          font-size: var(--font-size-body);
-          font-weight: var(--font-weight-medium);
-          cursor: pointer;
-          padding: var(--spacing-3) 0;
-          transition: all var(--duration-fast) var(--ease-out);
-          border-radius: var(--radius-medium);
-        }
-
-        .back-button:hover {
-          color: var(--color-primary-dark);
-          background: rgba(0, 122, 255, 0.05);
-          padding: var(--spacing-3) var(--spacing-4);
-          margin: 0 calc(-1 * var(--spacing-4));
-        }
-
-        .scenario-title {
-          display: flex;
-          align-items: center;
-          gap: var(--spacing-4);
-          margin-bottom: var(--spacing-3);
-        }
-
-        .scenario-icon {
-          font-size: var(--font-size-title2);
-        }
-
-        .scenario-title h1 {
-          font-size: var(--font-size-title1);
-          font-weight: var(--font-weight-bold);
-          color: var(--color-text-primary);
-          margin: 0;
-          letter-spacing: -0.01em;
-        }
-
-        .scenario-meta {
-          display: flex;
-          gap: var(--spacing-5);
-          align-items: center;
-        }
-
-        .difficulty-badge {
-          padding: var(--spacing-2) var(--spacing-4);
-          border-radius: var(--radius-full);
-          color: white;
-          font-size: var(--font-size-caption1);
-          font-weight: var(--font-weight-semibold);
-          text-transform: capitalize;
-          box-shadow: var(--shadow-sm);
-        }
-
-        .time-estimate {
-          color: var(--color-text-secondary);
-          font-size: var(--font-size-subheadline);
-          font-weight: var(--font-weight-medium);
-        }
-
-        .user-info {
-          color: var(--color-text-secondary);
-          font-size: var(--font-size-body);
-          font-weight: var(--font-weight-medium);
-        }
-
-        .scenario-main {
-          padding: var(--spacing-8) 0;
-        }
-
-        .scenario-layout {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: var(--spacing-8);
-          max-width: 1440px;
-          margin: 0 auto;
-        }
-
-        .context-panel,
-        .task-panel {
-          background: var(--color-bg-primary);
-          border-radius: var(--radius-2xl);
-          box-shadow: var(--shadow-lg);
-          border: 1px solid var(--color-neutral-200);
-          overflow: hidden;
-          transition: all var(--duration-normal) var(--ease-out);
-          animation: slideUp var(--duration-slow) var(--ease-out);
-        }
-
-        .context-panel:hover,
-        .task-panel:hover {
-          box-shadow: var(--shadow-xl);
-          transform: translateY(-2px);
-        }
-
-        .panel-header {
-          background: linear-gradient(135deg, var(--color-bg-secondary), var(--color-neutral-100));
-          border-bottom: 1px solid var(--color-neutral-200);
-          padding: var(--spacing-6) var(--spacing-7);
-        }
-
-        .panel-header h2 {
-          font-size: var(--font-size-title3);
-          font-weight: var(--font-weight-semibold);
-          color: var(--color-text-primary);
-          margin: 0;
-          letter-spacing: -0.01em;
-        }
-
-        .panel-content {
-          padding: var(--spacing-7);
-        }
-
-        .context-description p {
-          line-height: 1.6;
-          color: var(--color-text-secondary);
-          margin: 0 0 var(--spacing-7) 0;
-          font-size: var(--font-size-body);
-        }
-
-        .sample-documents h3 {
-          font-size: var(--font-size-headline);
-          font-weight: var(--font-weight-semibold);
-          color: var(--color-text-primary);
-          margin: 0 0 var(--spacing-5) 0;
-        }
-
-        .document-card {
-          border: 1px solid var(--color-neutral-200);
-          border-radius: var(--radius-large);
-          margin-bottom: var(--spacing-5);
-          overflow: hidden;
-          transition: all var(--duration-normal) var(--ease-out);
-        }
-
-        .document-card:hover {
-          border-color: var(--color-primary);
-          box-shadow: var(--shadow-md);
-          transform: translateY(-1px);
-        }
-
-        .document-header {
-          background: var(--color-bg-secondary);
-          padding: var(--spacing-4) var(--spacing-5);
-          border-bottom: 1px solid var(--color-neutral-200);
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-
-        .document-type {
-          font-size: var(--font-size-caption1);
-          color: var(--color-primary);
-          font-weight: var(--font-weight-semibold);
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-        }
-
-        .document-title {
-          font-size: var(--font-size-subheadline);
-          color: var(--color-text-primary);
-          font-weight: var(--font-weight-medium);
-        }
-
-        .document-content {
-          padding: var(--spacing-5);
-        }
-
-        .document-content pre {
-          font-family: var(--font-family-mono);
-          font-size: var(--font-size-footnote);
-          line-height: 1.5;
-          color: var(--color-text-secondary);
-          margin: 0;
-          white-space: pre-wrap;
-          background: var(--color-neutral-50);
-          padding: var(--spacing-4);
-          border-radius: var(--radius-medium);
-          border: 1px solid var(--color-neutral-200);
-        }
-
-        .objective-section {
-          margin-bottom: var(--spacing-8);
-          padding: var(--spacing-6);
-          background: linear-gradient(135deg, rgba(0, 122, 255, 0.03), rgba(0, 122, 255, 0.01));
-          border-radius: var(--radius-xl);
-          border: 2px solid rgba(0, 122, 255, 0.1);
-        }
-
-        .objective-section h3 {
-          font-size: var(--font-size-headline);
-          font-weight: var(--font-weight-semibold);
-          color: var(--color-primary);
-          margin: 0 0 var(--spacing-4) 0;
-        }
-
-        .objective-section p {
-          color: var(--color-text-primary);
-          line-height: 1.6;
-          margin: 0;
-          font-size: var(--font-size-body);
-          font-weight: var(--font-weight-medium);
-        }
-
-        .prompt-section {
-          margin-bottom: var(--spacing-7);
-        }
-
-        .prompt-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: var(--spacing-6);
-        }
-
-        .prompt-header h3 {
-          font-size: var(--font-size-title3);
-          font-weight: var(--font-weight-semibold);
-          color: var(--color-text-primary);
-          margin: 0;
-          background: var(--gradient-primary);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-
-        .prompt-mode-toggle {
-          display: flex;
-          background: var(--color-bg-secondary);
-          border-radius: var(--radius-full);
-          padding: var(--spacing-1);
-          border: 2px solid var(--color-neutral-200);
-          flex-wrap: wrap;
-          gap: var(--spacing-1);
-        }
-
-        .mode-button {
-          padding: var(--spacing-2) var(--spacing-4);
-          border: none;
-          background: transparent;
-          border-radius: var(--radius-full);
-          font-size: var(--font-size-caption1);
-          font-weight: var(--font-weight-medium);
-          color: var(--color-text-secondary);
-          cursor: pointer;
-          transition: all var(--duration-fast) var(--ease-out);
-          white-space: nowrap;
-          flex: 1;
-          min-width: 120px;
-        }
-
-        .mode-button.active {
-          background: var(--gradient-primary);
-          color: white;
-          box-shadow: var(--shadow-md);
-          transform: translateY(-1px);
-        }
-
-        .mode-button:hover:not(.active) {
-          color: var(--color-text-primary);
-          background: var(--color-bg-primary);
-        }
-
-        .progress-section {
-          margin-bottom: var(--spacing-6);
-          padding: var(--spacing-5);
-          background: linear-gradient(135deg, rgba(0, 102, 255, 0.05), rgba(0, 102, 255, 0.02));
-          border-radius: var(--radius-xl);
-          border: 2px solid rgba(0, 102, 255, 0.1);
-        }
-
-        .progress-text {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-top: var(--spacing-3);
-          font-size: var(--font-size-subheadline);
-          font-weight: var(--font-weight-medium);
-        }
-
-        .progress-text span:first-child {
-          color: var(--color-primary);
-        }
-
-        .encouragement {
-          color: var(--color-success);
-          font-weight: var(--font-weight-semibold);
-          animation: fadeIn var(--duration-normal) var(--ease-out);
-        }
-
-        .freewrite-section {
-          animation: slideUp var(--duration-normal) var(--ease-out);
-        }
-
-        .prompt-textarea {
-          width: 100%;
-          padding: var(--spacing-5);
-          border: 2px solid var(--color-neutral-300);
-          border-radius: var(--radius-large);
-          font-size: var(--font-size-body);
-          font-family: var(--font-family-system);
-          line-height: 1.6;
-          resize: vertical;
-          min-height: 200px;
-          background: var(--color-bg-primary);
-          color: var(--color-text-primary);
-          transition: all var(--duration-fast) var(--ease-out);
-        }
-
-        .prompt-textarea:focus {
-          outline: none;
-          border-color: var(--color-primary);
-          box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
-          transform: translateY(-1px);
-        }
-
-        .prompt-textarea::placeholder {
-          color: var(--color-text-tertiary);
-        }
-
-        .prompt-meta {
-          display: flex;
-          justify-content: space-between;
-          margin-top: var(--spacing-3);
-        }
-
-        .character-count,
-        .word-count {
-          font-size: var(--font-size-caption1);
-          color: var(--color-text-tertiary);
-          font-weight: var(--font-weight-medium);
-        }
-
-        .action-section {
-          display: flex;
-          gap: var(--spacing-4);
-          margin-bottom: var(--spacing-7);
-        }
-
-        .submit-button {
-          flex: 1;
-          transition: all var(--duration-fast) var(--ease-out);
-        }
-
-        .submit-button:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-          transform: none !important;
-        }
-
-        .hint-button {
-          white-space: nowrap;
-          min-width: 140px;
-        }
-
-        .hints-section {
-          margin-bottom: var(--spacing-7);
-          animation: slideUp var(--duration-normal) var(--ease-out);
-        }
-
-        .hints-section h3 {
-          font-size: var(--font-size-headline);
-          font-weight: var(--font-weight-semibold);
-          color: var(--color-text-primary);
-          margin: 0 0 var(--spacing-4) 0;
-        }
-
-        .hint-card {
-          background: linear-gradient(135deg, rgba(255, 149, 0, 0.05), rgba(255, 149, 0, 0.02));
-          border: 2px solid rgba(255, 149, 0, 0.2);
-          border-radius: var(--radius-xl);
-          padding: var(--spacing-6);
-          position: relative;
-          overflow: hidden;
-        }
-
-        .hint-card::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 4px;
-          height: 100%;
-          background: var(--color-warning);
-          border-radius: 0 var(--radius-small) var(--radius-small) 0;
-        }
-
-        .hint-card p {
-          color: var(--color-warning);
-          margin: 0 0 var(--spacing-4) 0;
-          line-height: 1.6;
-          font-size: var(--font-size-body);
-          font-weight: var(--font-weight-medium);
-          position: relative;
-          z-index: 2;
-        }
-
-        .next-hint-button {
-          font-size: var(--font-size-caption1);
-          padding: var(--spacing-2) var(--spacing-4);
-          border-radius: var(--radius-full);
-        }
-
-        .hint-complete {
-          font-size: var(--font-size-caption1);
-          color: var(--color-warning);
-          font-style: italic;
-          margin: 0 !important;
-          font-weight: var(--font-weight-medium);
-        }
-
-        .success-criteria {
-          background: linear-gradient(135deg, rgba(52, 199, 89, 0.03), rgba(52, 199, 89, 0.01));
-          border-radius: var(--radius-xl);
-          padding: var(--spacing-6);
-          border: 2px solid rgba(52, 199, 89, 0.1);
-          position: relative;
-        }
-
-        .success-criteria::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 4px;
-          height: 100%;
-          background: var(--color-success);
-          border-radius: 0 var(--radius-small) var(--radius-small) 0;
-        }
-
-        .success-criteria h3 {
-          font-size: var(--font-size-headline);
-          font-weight: var(--font-weight-semibold);
-          color: var(--color-success);
-          margin: 0 0 var(--spacing-4) 0;
-        }
-
-        .success-criteria ul {
-          margin: 0;
-          padding-left: var(--spacing-6);
-        }
-
-        .success-criteria li {
-          color: var(--color-success);
-          line-height: 1.6;
-          margin-bottom: var(--spacing-3);
-          font-weight: var(--font-weight-medium);
-        }
-
-        .scenario-error {
-          min-height: 100vh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: var(--color-bg-secondary);
-        }
-
-        .error-content {
-          text-align: center;
-          padding: var(--spacing-10);
-          background: var(--color-bg-primary);
-          border-radius: var(--radius-2xl);
-          box-shadow: var(--shadow-xl);
-          border: 1px solid var(--color-neutral-200);
-          max-width: 500px;
-          animation: scaleIn var(--duration-normal) var(--ease-spring);
-        }
-
-        .error-content h2 {
-          color: var(--color-text-primary);
-          font-size: var(--font-size-title2);
-          font-weight: var(--font-weight-bold);
-          margin: 0 0 var(--spacing-5) 0;
-        }
-
-        .error-content p {
-          color: var(--color-text-secondary);
-          font-size: var(--font-size-body);
-          margin: 0 0 var(--spacing-7) 0;
-          line-height: 1.6;
-        }
-
-        @keyframes slideDown {
-          from {
-            opacity: 0;
-            transform: translateY(-20px);
+        </main>
+
+        <style jsx>{`
+          .scenario-player {
+            min-height: 100vh;
+            background: var(--bg-page);
           }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
 
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
+          /* Header */
+          .header {
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-200);
+            padding: var(--space-4) 0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
           }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
 
-        @keyframes scaleIn {
-          from {
-            opacity: 0;
-            transform: scale(0.95);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-
-        @media (max-width: 1024px) {
-          .scenario-layout {
-            grid-template-columns: 1fr;
-            gap: var(--spacing-7);
-          }
-        }
-
-        @media (max-width: 768px) {
           .header-content {
-            flex-direction: column;
-            gap: var(--spacing-5);
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
           }
 
           .header-left {
-            flex-direction: column;
-            gap: var(--spacing-5);
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            flex: 1;
           }
 
-          .scenario-meta {
-            justify-content: center;
+          .scenario-info h1 {
+            font-size: var(--text-xl);
+            margin: 0 0 var(--space-2) 0;
+            color: var(--text-primary);
           }
 
-          .action-section {
-            flex-direction: column;
+          .meta {
+            display: flex;
+            gap: var(--space-3);
+            align-items: center;
           }
 
-          .hint-button {
-            white-space: normal;
-            min-width: auto;
+          .difficulty-badge {
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius-full);
+            font-size: var(--text-xs);
+            font-weight: var(--font-semibold);
+            color: var(--white);
+            text-transform: capitalize;
           }
 
-          .scenario-title h1 {
-            font-size: var(--font-size-title2);
+          .time {
+            font-size: var(--text-sm);
+            color: var(--text-tertiary);
           }
 
-          .panel-content {
-            padding: var(--spacing-6);
+          /* Main Content */
+          .main-content {
+            padding: var(--space-8) 0;
           }
-        }
 
-        @media (prefers-reduced-motion: reduce) {
-          .header-content,
+          .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-8);
+          }
+
+          /* Panels */
           .context-panel,
-          .task-panel,
-          .hints-section,
+          .task-panel {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-200);
+          }
+
+          .panel-section {
+            margin-bottom: var(--space-8);
+          }
+
+          .panel-section:last-child {
+            margin-bottom: 0;
+          }
+
+          .panel-section h2 {
+            font-size: var(--text-2xl);
+            margin-bottom: var(--space-4);
+            color: var(--text-primary);
+          }
+
+          .panel-section h3 {
+            font-size: var(--text-lg);
+            margin-bottom: var(--space-3);
+            color: var(--text-primary);
+          }
+
+          .context-text p {
+            margin-bottom: var(--space-4);
+            line-height: 1.6;
+            color: var(--text-secondary);
+          }
+
+          .context-text p:last-child {
+            margin-bottom: 0;
+          }
+
+          /* Documents */
+          .document {
+            margin-bottom: var(--space-4);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius);
+            overflow: hidden;
+          }
+
+          .document:last-child {
+            margin-bottom: 0;
+          }
+
+          .document-header {
+            background: var(--gray-50);
+            padding: var(--space-3) var(--space-4);
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          }
+
+          .doc-type {
+            font-size: var(--text-xs);
+            font-weight: var(--font-semibold);
+            color: var(--primary);
+            text-transform: uppercase;
+          }
+
+          .doc-title {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+          }
+
+          .document-content {
+            padding: var(--space-4);
+            font-family: monospace;
+            font-size: var(--text-sm);
+            line-height: 1.5;
+            color: var(--text-primary);
+            background: var(--gray-50);
+            margin: 0;
+            white-space: pre-wrap;
+          }
+
+          /* Hints */
+          .hints-box {
+            margin-top: var(--space-4);
+            padding: var(--space-4);
+            background: var(--gray-50);
+            border-radius: var(--radius);
+            border: 1px solid var(--gray-200);
+          }
+
+          .hint {
+            margin-bottom: var(--space-3);
+          }
+
+          .hint p {
+            margin: 0;
+            color: var(--text-secondary);
+            line-height: 1.6;
+          }
+
+          /* Objective */
+          .objective {
+            padding: var(--space-4);
+            background: var(--primary-light);
+            border-radius: var(--radius);
+            border: 1px solid var(--primary);
+            border-left: 4px solid var(--primary);
+          }
+
+          .objective p {
+            margin: 0;
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-weight: var(--font-medium);
+          }
+
+          /* Prompt Editor */
+          .prompt-editor {
+            width: 100%;
+            padding: var(--space-4);
+            border: 2px solid var(--gray-300);
+            border-radius: var(--radius);
+            font-family: var(--font-body);
+            font-size: var(--text-base);
+            line-height: 1.6;
+            color: var(--text-primary);
+            resize: vertical;
+            min-height: 200px;
+            transition: var(--transition);
+          }
+
+          .prompt-editor:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+          }
+
+          .prompt-editor::placeholder {
+            color: var(--text-tertiary);
+          }
+
+          .editor-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: var(--space-2);
+            font-size: var(--text-sm);
+            color: var(--text-tertiary);
+          }
+
+          /* Criteria List */
+          .criteria-list {
+            margin: 0;
+            padding-left: var(--space-6);
+          }
+
+          .criteria-list li {
+            margin-bottom: var(--space-2);
+            line-height: 1.6;
+            color: var(--text-secondary);
+          }
+
+          .criteria-list li:last-child {
+            margin-bottom: 0;
+          }
+
+          /* Error Page */
+          .error-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-page);
+          }
+
           .error-content {
-            animation: none;
+            text-align: center;
+            padding: var(--space-10);
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            max-width: 500px;
           }
-          
-          .context-panel:hover,
-          .task-panel:hover,
-          .document-card:hover {
-            transform: none;
+
+          .error-content h2 {
+            margin-bottom: var(--space-4);
           }
-        }
-      `}</style>
-    </div>
+
+          .error-content p {
+            margin-bottom: var(--space-6);
+            color: var(--text-secondary);
+          }
+
+          /* Responsive */
+          @media (max-width: 1024px) {
+            .content-grid {
+              grid-template-columns: 1fr;
+            }
+
+            .context-panel {
+              order: 2;
+            }
+
+            .task-panel {
+              order: 1;
+            }
+          }
+
+          @media (max-width: 768px) {
+            .header-left {
+              flex-direction: column;
+              align-items: flex-start;
+              gap: var(--space-3);
+            }
+
+            .scenario-info h1 {
+              font-size: var(--text-lg);
+            }
+
+            .context-panel,
+            .task-panel {
+              padding: var(--space-4);
+            }
+
+            .panel-section {
+              margin-bottom: var(--space-6);
+            }
+          }
+        `}</style>
+      </div>
+    </>
   )
 }
 
