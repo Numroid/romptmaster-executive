@@ -18,16 +18,83 @@ const Dashboard = () => {
     navigate('/scenarios')
   }
 
+  // Mock data - will be replaced with real data from API
+  const userProgress = {
+    level: 1,
+    currentLevelName: 'Apprentice',
+    totalPoints: 0,
+    scenariosCompleted: 0,
+    totalScenarios: 50,
+    currentStreak: 0,
+    averageScore: 0,
+    completionPercentage: 0
+  }
+
+  const modules = [
+    {
+      id: 1,
+      name: 'Foundation',
+      description: 'Master the basics of prompt engineering',
+      icon: '🎯',
+      scenarios: 10,
+      completed: 0,
+      difficulty: 'Beginner',
+      color: 'orange'
+    },
+    {
+      id: 2,
+      name: 'Intermediate',
+      description: 'Advanced techniques and best practices',
+      icon: '⚡',
+      scenarios: 15,
+      completed: 0,
+      difficulty: 'Intermediate',
+      color: 'navy',
+      locked: true
+    },
+    {
+      id: 3,
+      name: 'Advanced',
+      description: 'Complex business scenarios and workflows',
+      icon: '🚀',
+      scenarios: 15,
+      completed: 0,
+      difficulty: 'Advanced',
+      color: 'teal',
+      locked: true
+    },
+    {
+      id: 4,
+      name: 'Expert Mastery',
+      description: 'Industry-specific advanced applications',
+      icon: '👑',
+      scenarios: 10,
+      completed: 0,
+      difficulty: 'Expert',
+      color: 'orange',
+      locked: true
+    }
+  ]
+
+  const recentAchievements = [
+    // Will be populated with real achievements
+  ]
+
   return (
-    <div className="dashboard" data-testid="dashboard">
-      {/* Clean Header */}
+    <div className="dashboard">
+      {/* Header */}
       <header className="header">
         <div className="container">
           <div className="header-content">
             <h2 className="logo">PromptMaster</h2>
             <div className="header-actions">
-              <span className="user-name">Hi, {user?.name?.split(' ')[0]}</span>
-              <button className="btn btn-secondary btn-sm" onClick={handleLogout}>
+              <div className="user-info">
+                {user?.picture && (
+                  <img src={user.picture} alt={user.name} className="user-avatar" />
+                )}
+                <span className="user-name">Hi, {user?.name?.split(' ')[0]}</span>
+              </div>
+              <button className="btn btn-ghost btn-sm" onClick={handleLogout}>
                 Sign Out
               </button>
             </div>
@@ -38,92 +105,185 @@ const Dashboard = () => {
       {/* Main Content */}
       <main className="main-content">
         <div className="container">
-          {/* Welcome Section - Minimal */}
+          {/* Welcome Section */}
           <section className="welcome-section">
-            <h1>Your Learning Path</h1>
-            <p className="subtitle">Master prompt engineering through real business scenarios</p>
+            <h1 className="welcome-title">
+              Welcome back, <span className="gradient-text">{user?.name?.split(' ')[0]}</span>
+            </h1>
+            <p className="welcome-subtitle">Continue your journey to master AI prompt engineering</p>
           </section>
 
-          {/* Progress Overview - Clean Card */}
-          <div className="progress-card card">
-            <div className="progress-header">
-              <h3>Current Progress</h3>
-              <span className="level-badge badge badge-primary">Beginner</span>
-            </div>
-
-            <div className="progress-stats">
-              <div className="stat">
-                <div className="stat-value">0</div>
-                <div className="stat-label">Scenarios Completed</div>
+          {/* Stats Overview */}
+          <div className="stats-grid">
+            <div className="stat-card card-navy">
+              <div className="stat-header">
+                <div className="stat-icon-wrapper stat-icon-orange">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="stat-icon">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <div className="stat-badge badge badge-primary">Level {userProgress.level}</div>
               </div>
-              <div className="stat">
-                <div className="stat-value">0</div>
-                <div className="stat-label">Day Streak</div>
-              </div>
-              <div className="stat">
-                <div className="stat-value">0</div>
+              <div className="stat-content">
+                <div className="stat-value">{userProgress.totalPoints}</div>
                 <div className="stat-label">Total Points</div>
+                <div className="stat-meta">{userProgress.currentLevelName}</div>
               </div>
             </div>
 
-            <div className="progress-bar-container">
-              <div className="progress-bar-label">
-                <span>Overall Progress</span>
-                <span>0%</span>
+            <div className="stat-card card">
+              <div className="stat-header">
+                <div className="stat-icon-wrapper stat-icon-teal">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="stat-icon">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
               </div>
-              <div className="progress">
-                <div className="progress-bar" style={{ width: '0%' }}></div>
+              <div className="stat-content">
+                <div className="stat-value">{userProgress.scenariosCompleted}/{userProgress.totalScenarios}</div>
+                <div className="stat-label">Scenarios Completed</div>
+                <div className="stat-meta">{userProgress.completionPercentage}% Complete</div>
+              </div>
+            </div>
+
+            <div className="stat-card card">
+              <div className="stat-header">
+                <div className="stat-icon-wrapper stat-icon-orange">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="stat-icon">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+                  </svg>
+                </div>
+              </div>
+              <div className="stat-content">
+                <div className="stat-value">{userProgress.currentStreak}</div>
+                <div className="stat-label">Day Streak</div>
+                <div className="stat-meta">Keep the momentum!</div>
               </div>
             </div>
           </div>
 
-          {/* Start Learning CTA - Prominent but Simple */}
-          <div className="cta-section">
-            <div className="cta-content">
-              <h2>Ready to start?</h2>
-              <p>Begin your first scenario and learn how to write effective prompts for business analysis</p>
-              <button className="btn btn-primary btn-lg" onClick={handleStartScenario}>
-                Start Learning
-              </button>
-              <p className="cta-meta">Just 10 minutes to complete</p>
+          {/* Progress Bar */}
+          <div className="overall-progress card">
+            <div className="progress-header">
+              <div>
+                <h3 className="progress-title">Overall Progress</h3>
+                <p className="progress-subtitle">Complete all 50 scenarios to earn your certificate</p>
+              </div>
+              <span className="progress-percentage">{userProgress.completionPercentage}%</span>
+            </div>
+            <div className="progress-bar">
+              <div
+                className="progress-bar-fill"
+                style={{ width: `${userProgress.completionPercentage}%` }}
+              ></div>
             </div>
           </div>
 
-          {/* Quick Stats - Minimal */}
-          <div className="quick-stats">
-            <div className="stat-card card">
-              <div className="stat-icon">📊</div>
-              <h4>5 Scenarios</h4>
-              <p>Real business cases to practice</p>
+          {/* Modules Grid */}
+          <section className="modules-section">
+            <div className="section-header">
+              <h2 className="section-title">Learning Modules</h2>
+              <p className="section-subtitle">Progress through 4 modules to master prompt engineering</p>
             </div>
-            <div className="stat-card card">
-              <div className="stat-icon">🎯</div>
-              <h4>15+ Techniques</h4>
-              <p>Advanced prompting methods</p>
+
+            <div className="modules-grid">
+              {modules.map((module, index) => (
+                <div
+                  key={module.id}
+                  className={`module-card card ${module.locked ? 'module-locked' : 'card-interactive'}`}
+                  onClick={() => !module.locked && navigate('/scenarios')}
+                >
+                  {module.locked && (
+                    <div className="lock-overlay">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="lock-icon">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                      </svg>
+                    </div>
+                  )}
+
+                  <div className="module-header">
+                    <div className="module-number">Module {index + 1}</div>
+                    <span className={`badge badge-${module.color === 'navy' ? 'info' : module.color === 'teal' ? 'success' : 'primary'}`}>
+                      {module.difficulty}
+                    </span>
+                  </div>
+
+                  <h3 className="module-title">{module.name}</h3>
+                  <p className="module-description">{module.description}</p>
+
+                  <div className="module-stats">
+                    <div className="module-stat">
+                      <span className="module-stat-value">{module.scenarios}</span>
+                      <span className="module-stat-label">Scenarios</span>
+                    </div>
+                    <div className="module-stat">
+                      <span className="module-stat-value">{module.completed}/{module.scenarios}</span>
+                      <span className="module-stat-label">Completed</span>
+                    </div>
+                  </div>
+
+                  <div className="module-progress">
+                    <div className="progress-bar progress-bar-sm">
+                      <div
+                        className={`progress-bar-fill ${module.color === 'teal' ? 'progress-bar-success' : module.color === 'navy' ? 'progress-bar-info' : ''}`}
+                        style={{ width: `${(module.completed / module.scenarios) * 100}%` }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  {!module.locked && (
+                    <button className="btn btn-primary btn-sm btn-block module-cta">
+                      {module.completed > 0 ? 'Continue' : 'Start Module'}
+                    </button>
+                  )}
+                </div>
+              ))}
             </div>
-            <div className="stat-card card">
-              <div className="stat-icon">⚡</div>
-              <h4>Self-Paced</h4>
-              <p>Learn at your own speed</p>
+          </section>
+
+          {/* Quick Start CTA */}
+          {userProgress.scenariosCompleted === 0 && (
+            <div className="quick-start-cta card-navy">
+              <div className="cta-content">
+                <h3 className="cta-title">Ready to begin your journey?</h3>
+                <p className="cta-description">
+                  Start with your first scenario and learn how to write effective prompts
+                  for real business situations. Takes just 10 minutes.
+                </p>
+                <button className="btn btn-primary btn-lg" onClick={handleStartScenario}>
+                  Start First Scenario
+                </button>
+              </div>
+              <div className="cta-illustration">
+                <svg viewBox="0 0 200 200" fill="none" className="illustration">
+                  <circle cx="100" cy="100" r="80" stroke="var(--orange-600)" strokeWidth="2" opacity="0.2"/>
+                  <circle cx="100" cy="100" r="60" stroke="var(--orange-600)" strokeWidth="2" opacity="0.4"/>
+                  <circle cx="100" cy="100" r="40" fill="var(--orange-600)" opacity="0.6"/>
+                </svg>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </main>
 
       <style jsx>{`
         .dashboard {
           min-height: 100vh;
-          background: var(--bg-page);
+          background: linear-gradient(180deg,
+            var(--gray-900) 0%,
+            var(--navy-900) 100%
+          );
         }
 
         /* Header */
         .header {
-          background: var(--white);
-          border-bottom: 1px solid var(--gray-200);
-          padding: var(--space-4) 0;
           position: sticky;
           top: 0;
-          z-index: 10;
+          background: rgba(26, 26, 26, 0.9);
+          backdrop-filter: blur(12px);
+          border-bottom: 1px solid var(--border-color);
+          padding: var(--space-4) 0;
+          z-index: var(--z-sticky);
         }
 
         .header-content {
@@ -133,9 +293,12 @@ const Dashboard = () => {
         }
 
         .logo {
-          font-size: var(--text-xl);
+          font-size: var(--text-2xl);
           font-weight: var(--font-bold);
-          color: var(--primary);
+          background: linear-gradient(135deg, var(--orange-500), var(--orange-600));
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
           margin: 0;
         }
 
@@ -143,6 +306,19 @@ const Dashboard = () => {
           display: flex;
           align-items: center;
           gap: var(--space-4);
+        }
+
+        .user-info {
+          display: flex;
+          align-items: center;
+          gap: var(--space-3);
+        }
+
+        .user-avatar {
+          width: 32px;
+          height: 32px;
+          border-radius: var(--border-radius-full);
+          border: 2px solid var(--orange-600);
         }
 
         .user-name {
@@ -153,179 +329,336 @@ const Dashboard = () => {
 
         /* Main Content */
         .main-content {
-          padding: var(--space-8) 0;
+          padding: var(--space-12) 0;
         }
 
         /* Welcome Section */
         .welcome-section {
           text-align: center;
-          margin-bottom: var(--space-8);
+          margin-bottom: var(--space-12);
         }
 
-        .welcome-section h1 {
-          font-size: var(--text-4xl);
-          margin-bottom: var(--space-3);
+        .welcome-title {
+          font-size: var(--text-5xl);
+          font-weight: var(--font-bold);
           color: var(--text-primary);
+          margin: 0 0 var(--space-3) 0;
+          line-height: var(--leading-tight);
         }
 
-        .subtitle {
+        .gradient-text {
+          background: linear-gradient(135deg, var(--orange-500), var(--orange-400));
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+
+        .welcome-subtitle {
           font-size: var(--text-lg);
           color: var(--text-secondary);
-          max-width: 600px;
-          margin: 0 auto;
-        }
-
-        /* Progress Card */
-        .progress-card {
-          margin-bottom: var(--space-8);
-          max-width: 800px;
-          margin-left: auto;
-          margin-right: auto;
-        }
-
-        .progress-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: var(--space-6);
-        }
-
-        .progress-header h3 {
-          font-size: var(--text-xl);
           margin: 0;
         }
 
-        .progress-stats {
+        /* Stats Grid */
+        .stats-grid {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: var(--space-4);
-          margin-bottom: var(--space-6);
-          padding-bottom: var(--space-6);
-          border-bottom: 1px solid var(--gray-200);
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: var(--space-5);
+          margin-bottom: var(--space-8);
         }
 
-        .stat {
-          text-align: center;
+        .stat-card {
+          padding: var(--space-6);
+        }
+
+        .stat-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          margin-bottom: var(--space-4);
+        }
+
+        .stat-icon-wrapper {
+          width: 48px;
+          height: 48px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: var(--border-radius-lg);
+        }
+
+        .stat-icon-orange {
+          background: var(--accent-light);
+          color: var(--accent-primary);
+        }
+
+        .stat-icon-teal {
+          background: var(--teal-100);
+          color: var(--teal-500);
+        }
+
+        .stat-icon {
+          width: 24px;
+          height: 24px;
+        }
+
+        .stat-content {
+          margin-top: var(--space-2);
         }
 
         .stat-value {
-          font-size: var(--text-3xl);
+          font-size: var(--text-4xl);
           font-weight: var(--font-bold);
-          color: var(--primary);
+          color: var(--text-primary);
+          line-height: 1;
           margin-bottom: var(--space-2);
         }
 
         .stat-label {
           font-size: var(--text-sm);
           color: var(--text-secondary);
+          margin-bottom: var(--space-1);
         }
 
-        .progress-bar-container {
-          margin-top: var(--space-4);
+        .stat-meta {
+          font-size: var(--text-xs);
+          color: var(--text-tertiary);
         }
 
-        .progress-bar-label {
+        /* Overall Progress */
+        .overall-progress {
+          margin-bottom: var(--space-12);
+          padding: var(--space-8);
+        }
+
+        .progress-header {
           display: flex;
           justify-content: space-between;
-          margin-bottom: var(--space-2);
-          font-size: var(--text-sm);
-          color: var(--text-secondary);
-          font-weight: var(--font-medium);
+          align-items: flex-start;
+          margin-bottom: var(--space-5);
         }
 
-        /* CTA Section */
-        .cta-section {
-          max-width: 600px;
-          margin: 0 auto var(--space-12) auto;
-          text-align: center;
-        }
-
-        .cta-content h2 {
+        .progress-title {
           font-size: var(--text-2xl);
-          margin-bottom: var(--space-3);
+          font-weight: var(--font-semibold);
+          color: var(--text-primary);
+          margin: 0 0 var(--space-1) 0;
         }
 
-        .cta-content p {
-          font-size: var(--text-base);
-          color: var(--text-secondary);
-          margin-bottom: var(--space-6);
-          line-height: 1.6;
-        }
-
-        .cta-meta {
+        .progress-subtitle {
           font-size: var(--text-sm);
           color: var(--text-tertiary);
-          margin-top: var(--space-3);
+          margin: 0;
         }
 
-        /* Quick Stats */
-        .quick-stats {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: var(--space-4);
-          max-width: 900px;
-          margin: 0 auto;
+        .progress-percentage {
+          font-size: var(--text-3xl);
+          font-weight: var(--font-bold);
+          color: var(--orange-600);
         }
 
-        .stat-card {
+        /* Modules Section */
+        .modules-section {
+          margin-bottom: var(--space-12);
+        }
+
+        .section-header {
           text-align: center;
-          padding: var(--space-6);
+          margin-bottom: var(--space-8);
         }
 
-        .stat-card:hover {
-          box-shadow: var(--shadow-md);
-          transform: translateY(-2px);
-        }
-
-        .stat-icon {
-          font-size: 2.5rem;
-          margin-bottom: var(--space-3);
-        }
-
-        .stat-card h4 {
-          font-size: var(--text-lg);
-          margin-bottom: var(--space-2);
+        .section-title {
+          font-size: var(--text-4xl);
+          font-weight: var(--font-bold);
           color: var(--text-primary);
+          margin: 0 0 var(--space-3) 0;
         }
 
-        .stat-card p {
-          font-size: var(--text-sm);
+        .section-subtitle {
+          font-size: var(--text-lg);
           color: var(--text-secondary);
           margin: 0;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-          .header-actions {
-            gap: var(--space-2);
+        .modules-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: var(--space-6);
+        }
+
+        .module-card {
+          padding: var(--space-6);
+          position: relative;
+          overflow: hidden;
+        }
+
+        .module-locked {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+
+        .lock-overlay {
+          position: absolute;
+          top: var(--space-4);
+          right: var(--space-4);
+          width: 32px;
+          height: 32px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: var(--gray-700);
+          border-radius: var(--border-radius-full);
+          color: var(--text-muted);
+        }
+
+        .lock-icon {
+          width: 18px;
+          height: 18px;
+        }
+
+        .module-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: var(--space-4);
+        }
+
+        .module-number {
+          font-size: var(--text-xs);
+          font-weight: var(--font-semibold);
+          color: var(--text-tertiary);
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+
+        .module-title {
+          font-size: var(--text-2xl);
+          font-weight: var(--font-semibold);
+          color: var(--text-primary);
+          margin: 0 0 var(--space-2) 0;
+        }
+
+        .module-description {
+          font-size: var(--text-sm);
+          color: var(--text-secondary);
+          line-height: var(--leading-relaxed);
+          margin: 0 0 var(--space-5) 0;
+        }
+
+        .module-stats {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: var(--space-4);
+          margin-bottom: var(--space-4);
+        }
+
+        .module-stat {
+          text-align: center;
+          padding: var(--space-3);
+          background: var(--gray-750);
+          border-radius: var(--border-radius);
+        }
+
+        .module-stat-value {
+          display: block;
+          font-size: var(--text-xl);
+          font-weight: var(--font-bold);
+          color: var(--text-primary);
+          margin-bottom: var(--space-1);
+        }
+
+        .module-stat-label {
+          display: block;
+          font-size: var(--text-xs);
+          color: var(--text-tertiary);
+        }
+
+        .module-progress {
+          margin-bottom: var(--space-4);
+        }
+
+        .module-cta {
+          margin-top: var(--space-2);
+        }
+
+        /* Quick Start CTA */
+        .quick-start-cta {
+          display: grid;
+          grid-template-columns: 1fr 200px;
+          gap: var(--space-8);
+          align-items: center;
+          padding: var(--space-10);
+          background: var(--bg-navy);
+          border: 1px solid var(--navy-600);
+          border-radius: var(--border-radius-xl);
+        }
+
+        .cta-content {
+          max-width: 500px;
+        }
+
+        .cta-title {
+          font-size: var(--text-3xl);
+          font-weight: var(--font-bold);
+          color: var(--text-primary);
+          margin: 0 0 var(--space-3) 0;
+        }
+
+        .cta-description {
+          font-size: var(--text-base);
+          color: var(--text-secondary);
+          line-height: var(--leading-relaxed);
+          margin: 0 0 var(--space-6) 0;
+        }
+
+        .cta-illustration {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .illustration {
+          width: 180px;
+          height: 180px;
+          animation: pulse 3s ease-in-out infinite;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+          .quick-start-cta {
+            grid-template-columns: 1fr;
           }
 
-          .user-name {
+          .cta-illustration {
             display: none;
-          }
-
-          .welcome-section h1 {
-            font-size: var(--text-3xl);
-          }
-
-          .progress-stats {
-            grid-template-columns: 1fr;
-            gap: var(--space-6);
-          }
-
-          .quick-stats {
-            grid-template-columns: 1fr;
-            gap: var(--space-4);
-          }
-
-          .cta-content h2 {
-            font-size: var(--text-xl);
           }
         }
 
-        @media (prefers-reduced-motion: reduce) {
-          .stat-card:hover {
-            transform: none;
+        @media (max-width: 768px) {
+          .welcome-title {
+            font-size: var(--text-3xl);
+          }
+
+          .stats-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .modules-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .section-title {
+            font-size: var(--text-3xl);
+          }
+        }
+
+        @media (max-width: 480px) {
+          .user-info {
+            display: none;
+          }
+
+          .welcome-title {
+            font-size: var(--text-2xl);
           }
         }
       `}</style>
