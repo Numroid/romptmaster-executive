@@ -1,12 +1,20 @@
-import React from 'react'
+import React, { Suspense, lazy } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { useAuth0 } from '@auth0/auth0-react'
-import LandingPage from './components/LandingPage'
-import Dashboard from './components/Dashboard'
-import OnboardingFlow from './components/OnboardingFlow'
-import ScenarioSelection from './components/ScenarioSelection'
-import ScenarioPlayer from './components/ScenarioPlayer'
+import ErrorBoundary from './components/ErrorBoundary'
 import LoadingSpinner from './components/LoadingSpinner'
+
+// Eager loading for critical components
+import LandingPage from './components/LandingPage'
+
+// Lazy loading for performance optimization
+const Dashboard = lazy(() => import('./components/Dashboard'))
+const OnboardingFlow = lazy(() => import('./components/OnboardingFlow'))
+const ScenarioSelection = lazy(() => import('./components/ScenarioSelection'))
+const ScenarioPlayer = lazy(() => import('./components/ScenarioPlayer'))
+const CertificateVerification = lazy(() => import('./components/CertificateVerification'))
+const Help = lazy(() => import('./components/Help'))
+const NotFound = lazy(() => import('./components/NotFound'))
 
 function App({ mockAuth0 }) {
   const auth0 = mockAuth0 || useAuth0()
@@ -62,30 +70,38 @@ function App({ mockAuth0 }) {
   }
 
   return (
-    <Router>
-      <div className="App">
-        <Routes>
-          <Route 
-            path="/" 
-            element={
-              isAuthenticated ? (
-                user?.user_metadata?.onboarding_completed ? (
-                  <Dashboard />
-                ) : (
-                  <OnboardingFlow />
-                )
-              ) : (
-                <LandingPage />
-              )
-            } 
-          />
-          <Route path="/onboarding" element={<OnboardingFlow />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/scenarios" element={<ScenarioSelection />} />
-          <Route path="/scenario/:scenarioId" element={<ScenarioPlayer />} />
-        </Routes>
-      </div>
-    </Router>
+    <ErrorBoundary>
+      <Router>
+        <div className="App">
+          <Suspense fallback={<LoadingSpinner />}>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  isAuthenticated ? (
+                    user?.user_metadata?.onboarding_completed ? (
+                      <Dashboard />
+                    ) : (
+                      <OnboardingFlow />
+                    )
+                  ) : (
+                    <LandingPage />
+                  )
+                }
+              />
+              <Route path="/onboarding" element={<OnboardingFlow />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/scenarios" element={<ScenarioSelection />} />
+              <Route path="/scenario/:scenarioId" element={<ScenarioPlayer />} />
+              <Route path="/verify/:certificateId" element={<CertificateVerification />} />
+              <Route path="/help" element={<Help />} />
+              {/* 404 Catch-all route */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </div>
+      </Router>
+    </ErrorBoundary>
   )
 }
 
