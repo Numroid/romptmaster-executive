@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth0 } from '@auth0/auth0-react'
 import { mockGetScenarioById } from '../services/scenarioService'
+import { mockEvaluatePrompt } from '../services/evaluationService'
 import LoadingSpinner from './LoadingSpinner'
 import { useNotification } from './ui/Notification'
+import FeedbackModal from './FeedbackModal'
 
 const ScenarioPlayer = () => {
   const [scenario, setScenario] = useState(null)
@@ -14,6 +16,9 @@ const ScenarioPlayer = () => {
   const [currentHintIndex, setCurrentHintIndex] = useState(0)
   const [elapsedTime, setElapsedTime] = useState(0)
   const [showContext, setShowContext] = useState(true)
+  const [isEvaluating, setIsEvaluating] = useState(false)
+  const [feedbackData, setFeedbackData] = useState(null)
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false)
 
   const { scenarioId } = useParams()
   const navigate = useNavigate()
@@ -46,16 +51,67 @@ const ScenarioPlayer = () => {
     }
   }
 
-  const handlePromptSubmit = () => {
+  const handlePromptSubmit = async () => {
     if (!userPrompt.trim()) {
       showNotification('Please enter a prompt before submitting', 'warning')
       return
     }
 
-    // For now, show success notification - AI integration comes later
-    showNotification('Prompt submitted! AI evaluation will be implemented soon.', 'success')
-    console.log('User prompt:', userPrompt)
-    console.log('Scenario context:', scenario.businessContext)
+    if (userPrompt.trim().length < 20) {
+      showNotification('Please write a more detailed prompt (at least 20 characters)', 'warning')
+      return
+    }
+
+    try {
+      setIsEvaluating(true)
+
+      // Call evaluation API (currently using mock)
+      const result = await mockEvaluatePrompt(scenarioId, userPrompt, elapsedTime)
+
+      if (result.success) {
+        // Prepare feedback data for modal
+        setFeedbackData({
+          overallScore: result.attempt.score,
+          originalPrompt: userPrompt,
+          improvedPrompt: result.attempt.rewrite_example,
+          criteriaScores: result.attempt.criteria_scores,
+          strengths: result.attempt.strengths,
+          improvements: result.attempt.improvements,
+          keyTakeaway: result.attempt.key_takeaway
+        })
+
+        // Show feedback modal
+        setShowFeedbackModal(true)
+
+        // Show achievement notifications if any
+        if (result.newAchievements && result.newAchievements.length > 0) {
+          setTimeout(() => {
+            result.newAchievements.forEach(achievement => {
+              showNotification(`🏆 New Achievement: ${achievement.badge_name}!`, 'success')
+            })
+          }, 1000)
+        }
+      } else {
+        showNotification(result.error || 'Failed to evaluate prompt', 'error')
+      }
+    } catch (error) {
+      console.error('Error submitting prompt:', error)
+      showNotification('Failed to evaluate prompt. Please try again.', 'error')
+    } finally {
+      setIsEvaluating(false)
+    }
+  }
+
+  const handleTryAgain = () => {
+    setShowFeedbackModal(false)
+    setUserPrompt('')
+    setElapsedTime(0)
+    setFeedbackData(null)
+  }
+
+  const handleNextScenario = () => {
+    setShowFeedbackModal(false)
+    navigate('/scenarios')
   }
 
   const handleShowNextHint = () => {
@@ -288,21 +344,46 @@ Think about:
                   <button
                     className="btn btn-primary btn-lg btn-block"
                     onClick={handlePromptSubmit}
-                    disabled={!userPrompt.trim()}
+                    disabled={!userPrompt.trim() || isEvaluating}
                   >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="btn-icon">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                    Submit Prompt for Evaluation
+                    {isEvaluating ? (
+                      <>
+                        <svg className="btn-spinner" viewBox="0 0 24 24" fill="none">
+                          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" opacity="0.25" />
+                          <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        </svg>
+                        Evaluating your prompt...
+                      </>
+                    ) : (
+                      <>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="btn-icon">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        Submit Prompt for Evaluation
+                      </>
+                    )}
                   </button>
                   <p className="submit-note">
-                    Your prompt will be evaluated by Claude AI and you'll receive detailed feedback
+                    {isEvaluating
+                      ? 'Claude AI is analyzing your prompt...'
+                      : 'Your prompt will be evaluated by Claude AI and you\'ll receive detailed feedback'
+                    }
                   </p>
                 </div>
               </div>
             </section>
           </div>
         </main>
+
+        {/* Feedback Modal */}
+        <FeedbackModal
+          isOpen={showFeedbackModal}
+          onClose={() => setShowFeedbackModal(false)}
+          feedback={feedbackData}
+          scenarioId={scenarioId}
+          onTryAgain={handleTryAgain}
+          onNextScenario={handleNextScenario}
+        />
 
         <style jsx>{`
           .scenario-player {
@@ -783,6 +864,23 @@ Think about:
           @media (max-width: 480px) {
             .header-right .badge {
               display: none;
+            }
+          }
+
+          /* Loading Spinner */
+          .btn-spinner {
+            width: 18px;
+            height: 18px;
+            margin-right: var(--space-2);
+            animation: spin 1s linear infinite;
+          }
+
+          @keyframes spin {
+            from {
+              transform: rotate(0deg);
+            }
+            to {
+              transform: rotate(360deg);
             }
           }
         `}</style>

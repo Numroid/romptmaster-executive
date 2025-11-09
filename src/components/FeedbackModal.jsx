@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-const FeedbackModal = ({ isOpen, onClose, feedback, scenarioId }) => {
+const FeedbackModal = ({ isOpen, onClose, feedback, scenarioId, onTryAgain, onNextScenario }) => {
   const [showContent, setShowContent] = useState(false)
   const [animatedScore, setAnimatedScore] = useState(0)
   const navigate = useNavigate()
@@ -36,13 +36,20 @@ const FeedbackModal = ({ isOpen, onClose, feedback, scenarioId }) => {
   }, [isOpen, feedback])
 
   const handleNextScenario = () => {
-    onClose()
-    navigate('/scenarios')
+    if (onNextScenario) {
+      onNextScenario()
+    } else {
+      onClose()
+      navigate('/scenarios')
+    }
   }
 
   const handleTryAgain = () => {
-    onClose()
-    // Reset the prompt in parent component
+    if (onTryAgain) {
+      onTryAgain()
+    } else {
+      onClose()
+    }
   }
 
   if (!isOpen || !feedback) return null
