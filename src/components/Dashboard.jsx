@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
 import { useNavigate } from 'react-router-dom'
 import { mockGetUserProgress, mockGetUserAchievements, getLevelName, getPointsForNextLevel, formatDuration, formatRelativeTime } from '../services/progressService'
+import { mockCheckCertificateEligibility, mockGenerateCertificate } from '../services/certificateService'
 import AchievementBadge from './AchievementBadge'
 import SkillRadarChart from './SkillRadarChart'
+import Certificate from './Certificate'
 import LoadingSpinner from './LoadingSpinner'
 
 const Dashboard = () => {
@@ -14,6 +16,10 @@ const Dashboard = () => {
   const [progressData, setProgressData] = useState(null)
   const [achievements, setAchievements] = useState([])
   const [showAllAchievements, setShowAllAchievements] = useState(false)
+  const [certificateEligibility, setCertificateEligibility] = useState(null)
+  const [userCertificate, setUserCertificate] = useState(null)
+  const [generatingCertificate, setGeneratingCertificate] = useState(false)
+  const [showCertificate, setShowCertificate] = useState(false)
 
   useEffect(() => {
     loadDashboardData()
@@ -30,6 +36,10 @@ const Dashboard = () => {
 
       if (progressResult.success) {
         setProgressData(progressResult)
+
+        // Check certificate eligibility
+        const eligibilityResult = await mockCheckCertificateEligibility(user?.sub, progressResult.progress)
+        setCertificateEligibility(eligibilityResult)
       }
 
       if (achievementsResult.success) {
@@ -39,6 +49,26 @@ const Dashboard = () => {
       console.error('Error loading dashboard data:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleGenerateCertificate = async () => {
+    try {
+      setGeneratingCertificate(true)
+      const result = await mockGenerateCertificate(
+        user?.sub,
+        user?.name,
+        progressData?.progress?.averageScore || 85
+      )
+
+      if (result.success) {
+        setUserCertificate(result.certificate)
+        setShowCertificate(true)
+      }
+    } catch (error) {
+      console.error('Error generating certificate:', error)
+    } finally {
+      setGeneratingCertificate(false)
     }
   }
 
@@ -362,6 +392,149 @@ const Dashboard = () => {
               </div>
             </div>
           </section>
+
+          {/* Certificate Section */}
+          {certificateEligibility && (
+            <section className="certificate-section">
+              <div className="section-header">
+                <h2 className="section-title">Professional Certification</h2>
+                <p className="section-subtitle">
+                  {certificateEligibility.eligible
+                    ? 'Congratulations! You\'re eligible for your certificate'
+                    : 'Complete all requirements to earn your certificate'
+                  }
+                </p>
+              </div>
+
+              {certificateEligibility.eligible ? (
+                <div className="certificate-eligible card-navy">
+                  <div className="eligible-content">
+                    <div className="cert-icon">🎓</div>
+                    <div className="eligible-text">
+                      <h3 className="eligible-title">You\'ve Earned Your Certificate!</h3>
+                      <p className="eligible-description">
+                        You've successfully completed all {certificateEligibility.requirements.scenariosCompleted.required} scenarios
+                        with an average score of {userProgress.averageScore}%. Claim your professional certification now!
+                      </p>
+                      {!userCertificate ? (
+                        <button
+                          className="btn btn-primary btn-lg"
+                          onClick={handleGenerateCertificate}
+                          disabled={generatingCertificate}
+                        >
+                          {generatingCertificate ? (
+                            <>
+                              <svg className="btn-spinner" viewBox="0 0 24 24" fill="none">
+                                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" opacity="0.25" />
+                                <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                              </svg>
+                              Generating Certificate...
+                            </>
+                          ) : (
+                            <>
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="btn-icon">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                              Generate My Certificate
+                            </>
+                          )}
+                        </button>
+                      ) : (
+                        <button
+                          className="btn btn-primary btn-lg"
+                          onClick={() => setShowCertificate(true)}
+                        >
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="btn-icon">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                          View My Certificate
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="certificate-requirements card">
+                  <div className="requirements-list">
+                    <div className={`requirement-item ${certificateEligibility.requirements.scenariosCompleted.met ? 'met' : ''}`}>
+                      <div className="requirement-icon">
+                        {certificateEligibility.requirements.scenariosCompleted.met ? (
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        ) : (
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        )}
+                      </div>
+                      <div className="requirement-content">
+                        <div className="requirement-title">Complete All Scenarios</div>
+                        <div className="requirement-progress">
+                          {certificateEligibility.requirements.scenariosCompleted.current} / {certificateEligibility.requirements.scenariosCompleted.required} completed
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className={`requirement-item ${certificateEligibility.requirements.averageScore.met ? 'met' : ''}`}>
+                      <div className="requirement-icon">
+                        {certificateEligibility.requirements.averageScore.met ? (
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        ) : (
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        )}
+                      </div>
+                      <div className="requirement-content">
+                        <div className="requirement-title">Achieve 70%+ Average Score</div>
+                        <div className="requirement-progress">
+                          Current: {certificateEligibility.requirements.averageScore.current}%
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className={`requirement-item ${certificateEligibility.requirements.capstoneCompleted.met ? 'met' : ''}`}>
+                      <div className="requirement-icon">
+                        {certificateEligibility.requirements.capstoneCompleted.met ? (
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        ) : (
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        )}
+                      </div>
+                      <div className="requirement-content">
+                        <div className="requirement-title">Pass Capstone Project</div>
+                        <div className="requirement-progress">
+                          {certificateEligibility.requirements.capstoneCompleted.met ? 'Completed' : 'Not completed'}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </section>
+          )}
+
+          {/* Certificate Modal */}
+          {showCertificate && userCertificate && (
+            <div className="certificate-modal-overlay" onClick={() => setShowCertificate(false)}>
+              <div className="certificate-modal" onClick={(e) => e.stopPropagation()}>
+                <button className="modal-close" onClick={() => setShowCertificate(false)}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+                <Certificate certificate={userCertificate} showActions={true} />
+              </div>
+            </div>
+          )}
 
           {/* Quick Start CTA */}
           {userProgress.scenariosCompleted === 0 && (
@@ -933,6 +1106,240 @@ const Dashboard = () => {
 
           .welcome-title {
             font-size: var(--text-2xl);
+          }
+        }
+
+        /* Certificate Section */
+        .certificate-section {
+          margin-bottom: var(--space-10);
+        }
+
+        .certificate-eligible {
+          padding: var(--space-10);
+          text-align: center;
+          background: linear-gradient(135deg, var(--navy-700), var(--navy-800));
+          border: 1px solid var(--navy-600);
+        }
+
+        .eligible-content {
+          max-width: 600px;
+          margin: 0 auto;
+        }
+
+        .cert-icon {
+          font-size: 64px;
+          line-height: 1;
+          margin-bottom: var(--space-4);
+          animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+          0%, 100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-10px);
+          }
+        }
+
+        .eligible-text {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-4);
+          align-items: center;
+        }
+
+        .eligible-title {
+          font-size: var(--text-3xl);
+          font-weight: var(--font-bold);
+          color: var(--text-primary);
+          margin: 0;
+        }
+
+        .eligible-description {
+          font-size: var(--text-base);
+          color: var(--text-secondary);
+          line-height: var(--leading-relaxed);
+          margin: 0;
+        }
+
+        .certificate-requirements {
+          padding: var(--space-8);
+        }
+
+        .requirements-list {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-6);
+          max-width: 700px;
+          margin: 0 auto;
+        }
+
+        .requirement-item {
+          display: flex;
+          gap: var(--space-4);
+          padding: var(--space-5);
+          background: var(--bg-secondary);
+          border-radius: var(--border-radius-lg);
+          border: 2px solid var(--border-color);
+          transition: all var(--transition-base);
+        }
+
+        .requirement-item.met {
+          border-color: var(--teal-600);
+          background: linear-gradient(135deg, rgba(20, 184, 166, 0.1), rgba(20, 184, 166, 0.05));
+        }
+
+        .requirement-icon {
+          flex-shrink: 0;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: var(--border-radius-full);
+          background: var(--gray-800);
+        }
+
+        .requirement-item.met .requirement-icon {
+          background: var(--teal-600);
+          color: white;
+        }
+
+        .requirement-item:not(.met) .requirement-icon {
+          background: var(--gray-700);
+          color: var(--orange-400);
+        }
+
+        .requirement-icon svg {
+          width: 24px;
+          height: 24px;
+        }
+
+        .requirement-content {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-1);
+        }
+
+        .requirement-title {
+          font-size: var(--text-lg);
+          font-weight: var(--font-semibold);
+          color: var(--text-primary);
+        }
+
+        .requirement-progress {
+          font-size: var(--text-sm);
+          color: var(--text-secondary);
+        }
+
+        .requirement-item.met .requirement-progress {
+          color: var(--teal-400);
+        }
+
+        /* Certificate Modal */
+        .certificate-modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.9);
+          backdrop-filter: blur(8px);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: var(--z-modal);
+          padding: var(--space-4);
+          overflow-y: auto;
+        }
+
+        .certificate-modal {
+          position: relative;
+          max-width: 900px;
+          width: 100%;
+          max-height: 90vh;
+          overflow-y: auto;
+          animation: modalFadeIn 0.3s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+          from {
+            opacity: 0;
+            transform: scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+
+        .modal-close {
+          position: absolute;
+          top: var(--space-4);
+          right: var(--space-4);
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(26, 26, 26, 0.9);
+          border: 1px solid var(--border-color);
+          border-radius: var(--border-radius-full);
+          color: var(--text-secondary);
+          cursor: pointer;
+          transition: all var(--transition-base);
+          z-index: 10;
+        }
+
+        .modal-close:hover {
+          background: var(--gray-800);
+          border-color: var(--orange-500);
+          color: var(--text-primary);
+          transform: rotate(90deg);
+        }
+
+        .modal-close svg {
+          width: 20px;
+          height: 20px;
+        }
+
+        /* Button Spinner */
+        .btn-spinner {
+          width: 20px;
+          height: 20px;
+          margin-right: var(--space-2);
+          animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
+        .btn-icon {
+          width: 20px;
+          height: 20px;
+          margin-right: var(--space-2);
+        }
+
+        @media (max-width: 768px) {
+          .certificate-modal {
+            max-width: 100%;
+            max-height: 100vh;
+          }
+
+          .eligible-title {
+            font-size: var(--text-2xl);
+          }
+
+          .cert-icon {
+            font-size: 48px;
           }
         }
       `}</style>

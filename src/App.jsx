@@ -6,6 +6,7 @@ import Dashboard from './components/Dashboard'
 import OnboardingFlow from './components/OnboardingFlow'
 import ScenarioSelection from './components/ScenarioSelection'
 import ScenarioPlayer from './components/ScenarioPlayer'
+import CertificateVerification from './components/CertificateVerification'
 import LoadingSpinner from './components/LoadingSpinner'
 
 function App({ mockAuth0 }) {
@@ -83,6 +84,7 @@ function App({ mockAuth0 }) {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/scenarios" element={<ScenarioSelection />} />
           <Route path="/scenario/:scenarioId" element={<ScenarioPlayer />} />
+          <Route path="/verify/:certificateId" element={<CertificateVerification />} />
         </Routes>
       </div>
     </Router>
