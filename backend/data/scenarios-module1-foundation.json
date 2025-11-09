@@ -1,0 +1,362 @@
+[
+  {
+    "module": "foundation",
+    "title": "Customer Email Response",
+    "description": "Write a prompt to help compose a professional response to a customer complaint about delayed shipping.",
+    "business_context": "You're a customer service manager at an e-commerce company. A customer, Sarah Martinez, ordered a birthday gift 10 days ago with 5-7 day shipping, but it still hasn't arrived. She's frustrated and wants a refund. You want to keep her as a customer while addressing her concerns professionally.",
+    "task_description": "Create a prompt that will help you draft an empathetic, solution-oriented response email to Sarah. The response should acknowledge her frustration, explain the situation, offer a concrete solution, and include a goodwill gesture.",
+    "learning_objectives": [
+      "Understand how to provide clear context in prompts",
+      "Learn to specify desired tone and format",
+      "Practice defining specific output requirements",
+      "Recognize the importance of including relevant details"
+    ],
+    "evaluation_criteria": {
+      "clarity": {
+        "weight": 0.3,
+        "description": "Is the prompt clear and unambiguous about what's needed?"
+      },
+      "specificity": {
+        "weight": 0.3,
+        "description": "Does it include specific details like customer name, issue, and desired outcome?"
+      },
+      "context": {
+        "weight": 0.2,
+        "description": "Does it provide sufficient business context for appropriate response?"
+      },
+      "format": {
+        "weight": 0.2,
+        "description": "Does it specify the desired format (email) and tone (professional, empathetic)?"
+      }
+    },
+    "ideal_answer": "Write a professional, empathetic email response to customer Sarah Martinez who ordered a birthday gift 10 days ago with 5-7 day shipping but hasn't received it yet. She wants a refund. The email should: 1) Acknowledge her frustration and apologize sincerely, 2) Explain we're investigating with the carrier, 3) Offer either expedited re-shipment at no cost or full refund, 4) Include a 20% discount code for her next purchase as a goodwill gesture. Keep the tone warm and solution-focused, around 150-200 words.",
+    "difficulty": "beginner",
+    "estimated_time": 5,
+    "order_index": 1,
+    "is_capstone": false
+  },
+  {
+    "module": "foundation",
+    "title": "Meeting Agenda Creation",
+    "description": "Generate a prompt for creating a focused quarterly business review meeting agenda.",
+    "business_context": "You're preparing for Q1 2025 quarterly business review with your 8-person leadership team. The meeting is 90 minutes. You need to cover: financial performance vs targets, top 3 wins, top 3 challenges, and Q2 priorities. You want to ensure the meeting stays on track and action-oriented.",
+    "task_description": "Write a prompt that will generate a structured, time-boxed meeting agenda for this quarterly review that keeps everyone focused and ensures all critical topics are covered efficiently.",
+    "learning_objectives": [
+      "Practice breaking down requirements into clear bullet points",
+      "Learn to specify structural constraints (time, sections)",
+      "Understand how to request organized output",
+      "Apply prompting to common business tasks"
+    ],
+    "evaluation_criteria": {
+      "clarity": {
+        "weight": 0.25,
+        "description": "Is it clear what meeting agenda is needed?"
+      },
+      "specificity": {
+        "weight": 0.3,
+        "description": "Does it specify all required topics and time constraints?"
+      },
+      "context": {
+        "weight": 0.2,
+        "description": "Does it provide meeting context (audience, duration, purpose)?"
+      },
+      "format": {
+        "weight": 0.25,
+        "description": "Does it request a structured, time-boxed format?"
+      }
+    },
+    "ideal_answer": "Create a 90-minute quarterly business review meeting agenda for an 8-person leadership team covering Q1 2025. Structure it with time allocations and include these sections: 1) Q1 Financial Performance vs Targets (20 min), 2) Top 3 Wins & Lessons Learned (15 min), 3) Top 3 Challenges & Mitigation Plans (20 min), 4) Q2 Strategic Priorities (20 min), 5) Open Discussion & Action Items (15 min). Format as a table with columns for Topic, Owner, Duration, and Objective. Make it action-oriented.",
+    "difficulty": "beginner",
+    "estimated_time": 6,
+    "order_index": 2,
+    "is_capstone": false
+  },
+  {
+    "module": "foundation",
+    "title": "Product Description Writing",
+    "description": "Craft a prompt to generate compelling product descriptions for an online store.",
+    "business_context": "You run a premium kitchenware e-commerce store. You're launching a new $249 chef's knife made from Damascus steel with an ergonomic walnut handle. Your target customers are home cooking enthusiasts who value quality and craftsmanship. Product descriptions need to highlight benefits, not just features.",
+    "task_description": "Create a prompt that will generate a persuasive product description that converts browsers into buyers by emphasizing quality, craftsmanship, and the cooking experience.",
+    "learning_objectives": [
+      "Learn to include target audience in prompts",
+      "Understand benefit-focused vs feature-focused writing",
+      "Practice specifying tone and style requirements",
+      "Apply word count or length constraints"
+    ],
+    "evaluation_criteria": {
+      "clarity": {
+        "weight": 0.25,
+        "description": "Clear about what product description is needed?"
+      },
+      "specificity": {
+        "weight": 0.25,
+        "description": "Includes product details, price, and target audience?"
+      },
+      "context": {
+        "weight": 0.25,
+        "description": "Provides business context about brand positioning?"
+      },
+      "format": {
+        "weight": 0.25,
+        "description": "Specifies length, tone, and focus (benefits over features)?"
+      }
+    },
+    "ideal_answer": "Write a compelling product description for a $249 Damascus steel chef's knife with ergonomic walnut handle, targeting home cooking enthusiasts who value quality and craftsmanship. Focus on benefits over features: how it transforms the cooking experience, precision cutting, balance, and lasting value. Use a premium, aspirational tone that emphasizes artisan craftsmanship and the joy of cooking with professional-grade tools. Length: 100-150 words. Include a call-to-action at the end.",
+    "difficulty": "beginner",
+    "estimated_time": 5,
+    "order_index": 3,
+    "is_capstone": false
+  },
+  {
+    "module": "foundation",
+    "title": "FAQ Generation",
+    "description": "Create a prompt to generate helpful FAQs for a SaaS product launch.",
+    "business_context": "Your company is launching a new AI-powered expense management software for small businesses (5-50 employees). Pricing starts at $49/month. Common concerns you've heard from beta users: data security, integration with existing accounting software, learning curve, and whether it's worth switching from spreadsheets.",
+    "task_description": "Write a prompt that generates a comprehensive FAQ section addressing potential customer concerns while positioning your product as the solution. The FAQs should build trust and reduce friction in the buying process.",
+    "learning_objectives": [
+      "Practice anticipating needed output elements",
+      "Learn to incorporate business goals into prompts",
+      "Understand how to request persuasive yet honest content",
+      "Apply prompting to marketing copy"
+    ],
+    "evaluation_criteria": {
+      "clarity": {
+        "weight": 0.25,
+        "description": "Clear what FAQ content is needed?"
+      },
+      "specificity": {
+        "weight": 0.3,
+        "description": "Specifies key concerns to address and product details?"
+      },
+      "context": {
+        "weight": 0.25,
+        "description": "Provides customer context and business goals?"
+      },
+      "format": {
+        "weight": 0.2,
+        "description": "Requests FAQ format with clear Q&A structure?"
+      }
+    },
+    "ideal_answer": "Generate 8-10 frequently asked questions and answers for our new AI expense management software targeting small businesses (5-50 employees) priced at $49/month. Address these key concerns: 1) Data security and privacy, 2) Integration with QuickBooks/Xero, 3) Learning curve and onboarding time, 4) ROI vs Excel spreadsheets, 5) Customer support availability. Tone should be reassuring, straightforward, and build trust. Each answer should be 2-3 sentences, honest about capabilities while highlighting benefits. Format: Question in bold, answer below.",
+    "difficulty": "beginner",
+    "estimated_time": 7,
+    "order_index": 4,
+    "is_capstone": false
+  },
+  {
+    "module": "foundation",
+    "title": "Data Summarization",
+    "description": "Write a prompt to summarize quarterly sales data into executive insights.",
+    "business_context": "You're presenting Q1 sales results to the CEO. Raw data shows: Total revenue $2.3M (up 18% YoY), Enterprise segment +24%, SMB segment +8%, Customer churn 4.2% (down from 5.1%), Average deal size $12.5K (up from $10.2K), Sales cycle 42 days (down from 51 days). The CEO wants insights, not just numbers.",
+    "task_description": "Create a prompt that transforms this raw data into a concise executive summary highlighting key trends, what's working, and what needs attention.",
+    "learning_objectives": [
+      "Learn to specify desired output level (summary vs detailed)",
+      "Practice providing structured data as input",
+      "Understand how to request interpretation, not just repetition",
+      "Apply executive communication principles"
+    ],
+    "evaluation_criteria": {
+      "clarity": {
+        "weight": 0.25,
+        "description": "Clear about transforming data into insights?"
+      },
+      "specificity": {
+        "weight": 0.3,
+        "description": "Includes all relevant data points and audience context?"
+      },
+      "context": {
+        "weight": 0.2,
+        "description": "Specifies executive audience and insight-focused approach?"
+      },
+      "format": {
+        "weight": 0.25,
+        "description": "Requests concise summary format appropriate for executives?"
+      }
+    },
+    "ideal_answer": "Summarize Q1 sales performance for CEO review using this data: Revenue $2.3M (+18% YoY), Enterprise +24%, SMB +8%, Churn 4.2% (down from 5.1%), Deal size $12.5K (up from $10.2K), Sales cycle 42 days (down from 51). Format as: 1) Overall Health (1-2 sentences), 2) Key Wins (3 bullet points with insights), 3) Areas of Concern (1-2 bullets), 4) Recommended Focus for Q2 (2-3 bullets). Keep total under 200 words. Focus on what the numbers mean, not just restating them. Use confident, action-oriented language.",
+    "difficulty": "beginner",
+    "estimated_time": 6,
+    "order_index": 5,
+    "is_capstone": false
+  },
+  {
+    "module": "foundation",
+    "title": "Social Media Content",
+    "description": "Generate a prompt for creating engaging LinkedIn posts about company news.",
+    "business_context": "Your B2B software company just raised $5M Series A funding led by venture capital firm Accel Partners. You want to announce this on LinkedIn to attract talent, impress customers, and build credibility. Your company culture is professional but approachable, innovative, and mission-driven (helping small businesses automate workflows).",
+    "task_description": "Write a prompt that will create an authentic, engaging LinkedIn announcement that balances professional credibility with human authenticity and attracts the right attention.",
+    "learning_objectives": [
+      "Practice defining brand voice in prompts",
+      "Learn platform-specific content requirements",
+      "Understand how to balance multiple objectives",
+      "Apply social media best practices"
+    ],
+    "evaluation_criteria": {
+      "clarity": {
+        "weight": 0.25,
+        "description": "Clear about creating LinkedIn announcement?"
+      },
+      "specificity": {
+        "weight": 0.25,
+        "description": "Includes all key details (amount, investor, company mission)?"
+      },
+      "context": {
+        "weight": 0.25,
+        "description": "Specifies brand voice and business goals?"
+      },
+      "format": {
+        "weight": 0.25,
+        "description": "Requests LinkedIn-appropriate format (length, tone, structure)?"
+      }
+    },
+    "ideal_answer": "Write a LinkedIn post announcing our $5M Series A funding led by Accel Partners for our B2B workflow automation software for small businesses. Tone should be professional but warm, humble yet confident. Structure: 1) Hook (exciting news), 2) What this means for our mission to help SMBs automate workflows, 3) Thank investors and team, 4) Forward-looking statement about growth plans, 5) Call-to-action (we're hiring). Keep under 200 words. Avoid corporate jargon. Include 3-4 relevant hashtags. Make it shareable and authentic.",
+    "difficulty": "beginner",
+    "estimated_time": 5,
+    "order_index": 6,
+    "is_capstone": false
+  },
+  {
+    "module": "foundation",
+    "title": "Report Executive Summary",
+    "description": "Create a prompt to generate an executive summary from a lengthy market research report.",
+    "business_context": "Your market research team produced a 45-page report on customer satisfaction trends in your industry. Key findings: 67% of customers prioritize response time over price, mobile app usage up 89% year-over-year, top complaint is lack of proactive communication, competitors are investing heavily in AI chatbots. Your executive team has 10 minutes to read the summary before a strategy meeting.",
+    "task_description": "Write a prompt that distills this lengthy report into a scannable, actionable executive summary that busy leaders can digest quickly and use for decision-making.",
+    "learning_objectives": [
+      "Learn to request concise, scannable formats",
+      "Practice prioritizing information hierarchy",
+      "Understand audience time constraints",
+      "Apply executive communication standards"
+    ],
+    "evaluation_criteria": {
+      "clarity": {
+        "weight": 0.25,
+        "description": "Clear about creating executive summary?"
+      },
+      "specificity": {
+        "weight": 0.3,
+        "description": "Includes key findings and time constraint?"
+      },
+      "context": {
+        "weight": 0.2,
+        "description": "Specifies busy executive audience and decision-making context?"
+      },
+      "format": {
+        "weight": 0.25,
+        "description": "Requests scannable, action-oriented format?"
+      }
+    },
+    "ideal_answer": "Create a one-page executive summary of our 45-page customer satisfaction research report for executive team (10-minute read). Structure: 1) Key Insight (1 bold sentence), 2) Critical Findings (4 bullets: response time priority 67%, mobile usage +89%, proactive communication gap, competitor AI investments), 3) Business Implications (3 bullets on what this means for us), 4) Recommended Actions (3-4 prioritized next steps). Use bold headings, bullet points, and data callouts. Keep jargon-free. Total: 300 words max. Focus on decisions needed, not just data.",
+    "difficulty": "beginner",
+    "estimated_time": 7,
+    "order_index": 7,
+    "is_capstone": false
+  },
+  {
+    "module": "foundation",
+    "title": "Brainstorming Session",
+    "description": "Generate a prompt for brainstorming creative campaign ideas for a product launch.",
+    "business_context": "You're launching a new productivity app called 'FocusFlow' targeting remote workers and freelancers. The app blocks distracting websites during work sessions and provides analytics on focus patterns. Budget for launch campaign is modest ($15K). You need creative, low-cost ideas that will resonate with your audience's pain points around distractions.",
+    "task_description": "Create a prompt that generates creative, feasible marketing campaign ideas tailored to your specific audience, budget constraints, and product benefits.",
+    "learning_objectives": [
+      "Practice requesting creative output with constraints",
+      "Learn to incorporate budget and feasibility requirements",
+      "Understand how to guide ideation with specific parameters",
+      "Apply marketing campaign principles"
+    ],
+    "evaluation_criteria": {
+      "clarity": {
+        "weight": 0.25,
+        "description": "Clear about brainstorming campaign ideas?"
+      },
+      "specificity": {
+        "weight": 0.3,
+        "description": "Includes product details, target audience, and budget?"
+      },
+      "context": {
+        "weight": 0.2,
+        "description": "Provides audience pain points and product positioning?"
+      },
+      "format": {
+        "weight": 0.25,
+        "description": "Requests structured ideas with feasibility considerations?"
+      }
+    },
+    "ideal_answer": "Brainstorm 8-10 creative, low-cost marketing campaign ideas for launching 'FocusFlow', a productivity app that blocks distractions for remote workers and freelancers. Budget: $15K. Target audience pain points: constant distractions, guilt about wasted time, feeling unproductive. For each idea include: 1) Campaign concept name, 2) Brief description (2-3 sentences), 3) Primary channel (social, content, partnerships, etc.), 4) Estimated cost, 5) Why it resonates with audience. Focus on creative, authentic approaches over paid advertising. Prioritize ideas that leverage user-generated content or viral potential.",
+    "difficulty": "beginner",
+    "estimated_time": 6,
+    "order_index": 8,
+    "is_capstone": false
+  },
+  {
+    "module": "foundation",
+    "title": "Task Breakdown",
+    "description": "Write a prompt to break down a complex project into manageable tasks.",
+    "business_context": "Your team needs to migrate your company's customer database from an old CRM to Salesforce within 8 weeks. This involves 12,000 customer records, custom fields, integration with your email marketing platform, team training, and ensuring zero data loss. You have 2 developers, 1 project manager, and need buy-in from sales, marketing, and customer success teams.",
+    "task_description": "Create a prompt that breaks this complex migration project into a clear, week-by-week plan with specific tasks, owners, dependencies, and risk mitigation.",
+    "learning_objectives": [
+      "Learn to request structured, hierarchical output",
+      "Practice specifying dependencies and constraints",
+      "Understand project management prompt patterns",
+      "Apply business process thinking"
+    ],
+    "evaluation_criteria": {
+      "clarity": {
+        "weight": 0.25,
+        "description": "Clear about creating project breakdown?"
+      },
+      "specificity": {
+        "weight": 0.3,
+        "description": "Includes all project parameters (timeline, resources, scope)?"
+      },
+      "context": {
+        "weight": 0.2,
+        "description": "Provides team composition and stakeholder context?"
+      },
+      "format": {
+        "weight": 0.25,
+        "description": "Requests structured plan with tasks, owners, dependencies?"
+      }
+    },
+    "ideal_answer": "Create an 8-week project plan for migrating 12,000 customer records from legacy CRM to Salesforce. Team: 2 developers, 1 PM. Stakeholders: sales, marketing, customer success. Format as week-by-week breakdown including: 1) Phase name, 2) Key tasks (3-5 per week), 3) Task owner (dev/PM/stakeholder), 4) Dependencies, 5) Risk mitigation steps, 6) Success metrics. Critical requirements: zero data loss, custom field mapping, email platform integration, team training. Include pre-launch testing week and post-launch support week. Present as a table or structured outline.",
+    "difficulty": "beginner",
+    "estimated_time": 8,
+    "order_index": 9,
+    "is_capstone": false
+  },
+  {
+    "module": "foundation",
+    "title": "Market Research Query",
+    "description": "Generate a prompt for conducting basic market research analysis.",
+    "business_context": "You're considering expanding your online tutoring platform from high school subjects into professional certification prep (PMP, CPA, CFA). You need to understand market size, competition landscape, pricing models, and customer acquisition strategies in this space before making a go/no-go decision. Your board meeting is in 2 weeks.",
+    "task_description": "Write a prompt that gathers comprehensive market research insights in a format that supports strategic decision-making for this expansion opportunity.",
+    "learning_objectives": [
+      "Practice requesting multi-faceted analysis",
+      "Learn to structure complex research queries",
+      "Understand decision-support output formats",
+      "Apply strategic thinking to prompts"
+    ],
+    "evaluation_criteria": {
+      "clarity": {
+        "weight": 0.25,
+        "description": "Clear about conducting market research analysis?"
+      },
+      "specificity": {
+        "weight": 0.3,
+        "description": "Specifies research areas (market size, competition, pricing, etc.)?"
+      },
+      "context": {
+        "weight": 0.2,
+        "description": "Provides current business context and decision timeframe?"
+      },
+      "format": {
+        "weight": 0.25,
+        "description": "Requests decision-oriented format suitable for board presentation?"
+      }
+    },
+    "ideal_answer": "Conduct market research analysis for expanding our high school online tutoring platform into professional certification prep (PMP, CPA, CFA). Structure research into these sections: 1) Market Size & Growth (TAM/SAM/SOM estimates, trends), 2) Competitive Landscape (top 5 players, their strengths/weaknesses, market share), 3) Pricing Models (what customers pay, typical pricing strategies), 4) Customer Acquisition (primary channels, CAC benchmarks), 5) Barriers to Entry, 6) Go/No-Go Recommendation with rationale. Format for board presentation (concise, data-driven). Prioritize US market. Include sources and confidence levels for key data points.",
+    "difficulty": "beginner",
+    "estimated_time": 8,
+    "order_index": 10,
+    "is_capstone": false
+  }
+]
