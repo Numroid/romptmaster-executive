@@ -52,12 +52,13 @@ const Notification = ({ message, type = 'info', duration = 5000, onClose }) => {
           align-items: center;
           gap: var(--space-3);
           padding: var(--space-4);
-          background: var(--white);
-          border-radius: var(--radius-lg);
+          background: var(--bg-secondary);
+          border-radius: var(--border-radius-lg);
           box-shadow: var(--shadow-lg);
+          border: 1px solid var(--border-color);
           border-left: 4px solid;
           max-width: 400px;
-          z-index: 1001;
+          z-index: var(--z-modal);
           animation: slideInRight 0.3s ease;
         }
 
@@ -66,19 +67,23 @@ const Notification = ({ message, type = 'info', duration = 5000, onClose }) => {
         }
 
         .notification-success {
-          border-left-color: var(--secondary);
+          border-left-color: var(--teal-500);
+          background: linear-gradient(135deg, rgba(20, 184, 166, 0.1), var(--bg-secondary));
         }
 
         .notification-error {
-          border-left-color: var(--error);
+          border-left-color: #ef4444;
+          background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), var(--bg-secondary));
         }
 
         .notification-warning {
-          border-left-color: var(--accent);
+          border-left-color: var(--orange-500);
+          background: linear-gradient(135deg, rgba(233, 81, 10, 0.1), var(--bg-secondary));
         }
 
         .notification-info {
-          border-left-color: var(--primary);
+          border-left-color: var(--navy-500);
+          background: linear-gradient(135deg, rgba(71, 126, 219, 0.1), var(--bg-secondary));
         }
 
         .notification-icon {
@@ -87,30 +92,30 @@ const Notification = ({ message, type = 'info', duration = 5000, onClose }) => {
           justify-content: center;
           width: 24px;
           height: 24px;
-          border-radius: var(--radius-full);
+          border-radius: var(--border-radius-full);
           font-weight: var(--font-bold);
           font-size: var(--text-sm);
           flex-shrink: 0;
         }
 
         .notification-success .notification-icon {
-          background-color: #f0fdf4;
-          color: var(--secondary);
+          background-color: rgba(20, 184, 166, 0.2);
+          color: var(--teal-400);
         }
 
         .notification-error .notification-icon {
-          background-color: #fef2f2;
-          color: var(--error);
+          background-color: rgba(239, 68, 68, 0.2);
+          color: #f87171;
         }
 
         .notification-warning .notification-icon {
-          background-color: #fff7ed;
-          color: var(--accent);
+          background-color: rgba(233, 81, 10, 0.2);
+          color: var(--orange-400);
         }
 
         .notification-info .notification-icon {
-          background-color: var(--primary-light);
-          color: var(--primary);
+          background-color: rgba(71, 126, 219, 0.2);
+          color: var(--navy-400);
         }
 
         .notification-message {
@@ -133,13 +138,13 @@ const Notification = ({ message, type = 'info', duration = 5000, onClose }) => {
           display: flex;
           align-items: center;
           justify-content: center;
-          border-radius: var(--radius);
-          transition: var(--transition);
+          border-radius: var(--border-radius);
+          transition: var(--transition-base);
           flex-shrink: 0;
         }
 
         .notification-close:hover {
-          background-color: var(--gray-100);
+          background-color: var(--gray-800);
           color: var(--text-primary);
         }
 
