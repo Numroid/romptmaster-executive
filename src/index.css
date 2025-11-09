@@ -1,5 +1,5 @@
-/* Import Modern Learning Design System */
-@import './styles/modern-learning.css';
+/* Import PromptMaster Brand Design System */
+@import './styles/brand-theme.css';
 
 /* Legacy loading component - minimal styling */
 .loading {
