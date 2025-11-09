@@ -1,10 +1,46 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
 import { useNavigate } from 'react-router-dom'
+import { mockGetUserProgress, mockGetUserAchievements, getLevelName, getPointsForNextLevel, formatDuration, formatRelativeTime } from '../services/progressService'
+import AchievementBadge from './AchievementBadge'
+import SkillRadarChart from './SkillRadarChart'
+import LoadingSpinner from './LoadingSpinner'
 
 const Dashboard = () => {
   const { user, logout } = useAuth0()
   const navigate = useNavigate()
+
+  const [loading, setLoading] = useState(true)
+  const [progressData, setProgressData] = useState(null)
+  const [achievements, setAchievements] = useState([])
+  const [showAllAchievements, setShowAllAchievements] = useState(false)
+
+  useEffect(() => {
+    loadDashboardData()
+  }, [])
+
+  const loadDashboardData = async () => {
+    try {
+      setLoading(true)
+      // Load progress and achievements (currently using mock)
+      const [progressResult, achievementsResult] = await Promise.all([
+        mockGetUserProgress(user?.sub),
+        mockGetUserAchievements(user?.sub)
+      ])
+
+      if (progressResult.success) {
+        setProgressData(progressResult)
+      }
+
+      if (achievementsResult.success) {
+        setAchievements(achievementsResult.achievements)
+      }
+    } catch (error) {
+      console.error('Error loading dashboard data:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleLogout = () => {
     logout({
@@ -18,67 +54,66 @@ const Dashboard = () => {
     navigate('/scenarios')
   }
 
-  // Mock data - will be replaced with real data from API
-  const userProgress = {
-    level: 1,
-    currentLevelName: 'Apprentice',
-    totalPoints: 0,
-    scenariosCompleted: 0,
-    totalScenarios: 50,
-    currentStreak: 0,
-    averageScore: 0,
-    completionPercentage: 0
+  if (loading || !progressData) {
+    return <LoadingSpinner />
   }
 
-  const modules = [
-    {
-      id: 1,
-      name: 'Foundation',
-      description: 'Master the basics of prompt engineering',
-      icon: '🎯',
-      scenarios: 10,
-      completed: 0,
-      difficulty: 'Beginner',
-      color: 'orange'
-    },
-    {
-      id: 2,
-      name: 'Intermediate',
-      description: 'Advanced techniques and best practices',
-      icon: '⚡',
-      scenarios: 15,
-      completed: 0,
-      difficulty: 'Intermediate',
-      color: 'navy',
-      locked: true
-    },
-    {
-      id: 3,
-      name: 'Advanced',
-      description: 'Complex business scenarios and workflows',
-      icon: '🚀',
-      scenarios: 15,
-      completed: 0,
-      difficulty: 'Advanced',
-      color: 'teal',
-      locked: true
-    },
-    {
-      id: 4,
-      name: 'Expert Mastery',
-      description: 'Industry-specific advanced applications',
-      icon: '👑',
-      scenarios: 10,
-      completed: 0,
-      difficulty: 'Expert',
-      color: 'orange',
-      locked: true
-    }
-  ]
+  const { user: userData, progress } = progressData
+  const userProgress = {
+    level: userData.currentLevel,
+    currentLevelName: getLevelName(userData.currentLevel),
+    totalPoints: userData.totalPoints,
+    scenariosCompleted: progress.scenariosCompleted,
+    totalScenarios: progress.totalScenarios,
+    currentStreak: userData.currentStreak,
+    longestStreak: userData.longestStreak,
+    averageScore: progress.averageScore,
+    completionPercentage: progress.completionRate,
+    totalTimeSpent: progress.totalTimeSpent
+  }
 
-  const recentAchievements = [
-    // Will be populated with real achievements
-  ]
+  const pointsForNextLevel = getPointsForNextLevel(userData.totalPoints)
+  const earnedAchievements = achievements.filter(a => a.earned)
+
+  // Helper functions for module display
+  const getModuleIcon = (moduleName) => {
+    const icons = {
+      'Foundation': '🎯',
+      'Intermediate': '⚡',
+      'Advanced': '🚀',
+      'Expert': '👑'
+    }
+    return icons[moduleName] || '📚'
+  }
+
+  const getModuleDescription = (moduleName) => {
+    const descriptions = {
+      'Foundation': 'Master the basics of prompt engineering',
+      'Intermediate': 'Advanced techniques and best practices',
+      'Advanced': 'Complex business scenarios and workflows',
+      'Expert': 'Industry-specific advanced applications'
+    }
+    return descriptions[moduleName] || 'Continue your learning journey'
+  }
+
+  const getModuleColor = (moduleId) => {
+    const colors = ['orange', 'navy', 'teal', 'orange']
+    return colors[(moduleId - 1) % colors.length]
+  }
+
+  // Map backend module progress to frontend display
+  const modules = progress.moduleProgress.map(mod => ({
+    id: mod.moduleId,
+    name: mod.moduleName,
+    description: getModuleDescription(mod.moduleName),
+    icon: getModuleIcon(mod.moduleName),
+    scenarios: mod.totalScenarios,
+    completed: mod.scenariosCompleted,
+    difficulty: mod.moduleName,
+    color: getModuleColor(mod.moduleId),
+    locked: mod.isLocked,
+    averageScore: mod.averageScore
+  }))
 
   return (
     <div className="dashboard">
@@ -127,7 +162,7 @@ const Dashboard = () => {
               <div className="stat-content">
                 <div className="stat-value">{userProgress.totalPoints}</div>
                 <div className="stat-label">Total Points</div>
-                <div className="stat-meta">{userProgress.currentLevelName}</div>
+                <div className="stat-meta">{pointsForNextLevel} to Level {userProgress.level + 1}</div>
               </div>
             </div>
 
@@ -155,9 +190,9 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="stat-content">
-                <div className="stat-value">{userProgress.currentStreak}</div>
+                <div className="stat-value">{userProgress.currentStreak} 🔥</div>
                 <div className="stat-label">Day Streak</div>
-                <div className="stat-meta">Keep the momentum!</div>
+                <div className="stat-meta">Best: {userProgress.longestStreak} days</div>
               </div>
             </div>
           </div>
@@ -238,6 +273,93 @@ const Dashboard = () => {
                   )}
                 </div>
               ))}
+            </div>
+          </section>
+
+          {/* Achievement Showcase */}
+          <section className="achievements-section">
+            <div className="section-header">
+              <div>
+                <h2 className="section-title">Achievements</h2>
+                <p className="section-subtitle">{earnedAchievements.length} of {achievements.length} unlocked</p>
+              </div>
+              {achievements.length > 6 && (
+                <button
+                  className="btn btn-ghost btn-sm"
+                  onClick={() => setShowAllAchievements(!showAllAchievements)}
+                >
+                  {showAllAchievements ? 'Show Less' : 'View All'}
+                </button>
+              )}
+            </div>
+
+            <div className="achievements-grid">
+              {(showAllAchievements ? achievements : achievements.slice(0, 6)).map(achievement => (
+                <AchievementBadge
+                  key={achievement.id}
+                  achievement={achievement}
+                  size="medium"
+                  showLabel={true}
+                />
+              ))}
+            </div>
+
+            {earnedAchievements.length === 0 && (
+              <div className="empty-achievements card">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="empty-icon">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+                <p className="empty-text">Complete scenarios to start earning achievements!</p>
+              </div>
+            )}
+          </section>
+
+          {/* Skills & Activity Section */}
+          <section className="skills-activity-section">
+            <div className="two-column-grid">
+              {/* Skill Radar Chart */}
+              <div className="card">
+                <div className="card-header">
+                  <h3 className="card-title">Skill Breakdown</h3>
+                  <p className="card-subtitle">Your performance across 6 key dimensions</p>
+                </div>
+                <div className="card-body">
+                  <SkillRadarChart skills={progress.skillScores} size={280} />
+                </div>
+              </div>
+
+              {/* Recent Activity */}
+              <div className="card">
+                <div className="card-header">
+                  <h3 className="card-title">Recent Activity</h3>
+                  <p className="card-subtitle">Your latest achievements and completions</p>
+                </div>
+                <div className="card-body">
+                  {progress.recentActivity && progress.recentActivity.length > 0 ? (
+                    <div className="activity-feed">
+                      {progress.recentActivity.map(activity => (
+                        <div key={activity.id} className="activity-item">
+                          <div className="activity-icon">{activity.icon}</div>
+                          <div className="activity-content">
+                            <div className="activity-message">{activity.message}</div>
+                            {activity.score && (
+                              <div className="activity-score">Score: {activity.score}%</div>
+                            )}
+                            <div className="activity-time">{formatRelativeTime(activity.timestamp)}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="empty-activity">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="empty-icon-sm">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <p className="empty-text-sm">No activity yet. Complete your first scenario!</p>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </section>
 
@@ -649,6 +771,158 @@ const Dashboard = () => {
 
           .section-title {
             font-size: var(--text-3xl);
+          }
+        }
+
+        /* Achievements Section */
+        .achievements-section {
+          margin-bottom: var(--space-10);
+        }
+
+        .achievements-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+          gap: var(--space-6);
+        }
+
+        .empty-achievements {
+          padding: var(--space-12);
+          text-align: center;
+        }
+
+        .empty-icon {
+          width: 64px;
+          height: 64px;
+          margin: 0 auto var(--space-4);
+          color: var(--text-tertiary);
+        }
+
+        .empty-text {
+          font-size: var(--text-base);
+          color: var(--text-secondary);
+          margin: 0;
+        }
+
+        /* Skills & Activity Section */
+        .skills-activity-section {
+          margin-bottom: var(--space-10);
+        }
+
+        .two-column-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: var(--space-6);
+        }
+
+        .card-header {
+          margin-bottom: var(--space-6);
+        }
+
+        .card-title {
+          font-size: var(--text-xl);
+          font-weight: var(--font-semibold);
+          color: var(--text-primary);
+          margin: 0 0 var(--space-1) 0;
+        }
+
+        .card-subtitle {
+          font-size: var(--text-sm);
+          color: var(--text-secondary);
+          margin: 0;
+        }
+
+        .card-body {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          min-height: 300px;
+        }
+
+        /* Activity Feed */
+        .activity-feed {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-4);
+        }
+
+        .activity-item {
+          display: flex;
+          gap: var(--space-3);
+          padding: var(--space-4);
+          background: var(--bg-secondary);
+          border-radius: var(--border-radius-lg);
+          border: 1px solid var(--border-color);
+          transition: all var(--transition-base);
+        }
+
+        .activity-item:hover {
+          border-color: var(--orange-500);
+          box-shadow: var(--shadow-sm);
+        }
+
+        .activity-icon {
+          font-size: 24px;
+          flex-shrink: 0;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: var(--gray-800);
+          border-radius: var(--border-radius-lg);
+        }
+
+        .activity-content {
+          flex: 1;
+        }
+
+        .activity-message {
+          font-size: var(--text-base);
+          font-weight: var(--font-medium);
+          color: var(--text-primary);
+          margin-bottom: var(--space-1);
+        }
+
+        .activity-score {
+          font-size: var(--text-sm);
+          color: var(--orange-400);
+          font-weight: var(--font-semibold);
+          margin-bottom: var(--space-1);
+        }
+
+        .activity-time {
+          font-size: var(--text-xs);
+          color: var(--text-tertiary);
+        }
+
+        .empty-activity {
+          text-align: center;
+          padding: var(--space-8);
+        }
+
+        .empty-icon-sm {
+          width: 48px;
+          height: 48px;
+          margin: 0 auto var(--space-3);
+          color: var(--text-tertiary);
+        }
+
+        .empty-text-sm {
+          font-size: var(--text-sm);
+          color: var(--text-secondary);
+          margin: 0;
+        }
+
+        @media (max-width: 1024px) {
+          .two-column-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .achievements-grid {
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
           }
         }
 
