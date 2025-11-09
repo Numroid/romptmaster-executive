@@ -13,35 +13,46 @@ const LandingPage = () => {
   }
 
   return (
-    <div className="landing-page" data-testid="landing-page">
-      {/* Hero Section */}
-      <section className="hero">
+    <div className="landing-page">
+      {/* Navigation */}
+      <nav className="nav">
         <div className="container">
-          <nav className="nav">
+          <div className="nav-content">
             <h2 className="logo">PromptMaster</h2>
             <button
-              className="btn btn-ghost"
+              className="btn btn-ghost btn-sm"
               onClick={() => loginWithRedirect()}
             >
               Sign In
             </button>
-          </nav>
+          </div>
+        </div>
+      </nav>
 
+      {/* Hero Section */}
+      <section className="hero">
+        <div className="container">
           <div className="hero-content">
-            <h1>Master Prompt Engineering for Business</h1>
-            <p className="subtitle">
-              Learn to write effective AI prompts through realistic business scenarios.
-              Built for finance and business leaders.
+            <div className="hero-badge">
+              <span className="badge badge-primary">For Business Professionals</span>
+            </div>
+            <h1 className="hero-title">
+              Master AI Prompt Engineering<br />
+              <span className="hero-gradient">For Real Business Impact</span>
+            </h1>
+            <p className="hero-subtitle">
+              Learn to write effective AI prompts through 50+ realistic business scenarios.
+              Designed for finance leaders, SMB owners, and busy professionals.
             </p>
-            <div className="cta-buttons">
+            <div className="hero-cta">
               <button
                 className="btn btn-primary btn-xl"
                 onClick={handleLogin}
               >
                 Start Learning Free
               </button>
+              <p className="hero-note">No credit card required • 50 practical scenarios</p>
             </div>
-            <p className="cta-note">No credit card required</p>
           </div>
         </div>
       </section>
@@ -49,22 +60,48 @@ const LandingPage = () => {
       {/* Features Section */}
       <section className="features">
         <div className="container">
-          <h2>What You'll Learn</h2>
+          <div className="section-header">
+            <h2 className="section-title">What Makes This Different</h2>
+            <p className="section-subtitle">Premium training designed for professionals who value their time</p>
+          </div>
           <div className="feature-grid">
             <div className="feature-card card">
-              <div className="feature-icon">📊</div>
-              <h3>Real Business Scenarios</h3>
-              <p>Practice with budget analysis, risk assessment, and strategic planning tasks</p>
+              <div className="feature-icon-wrapper">
+                <svg className="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="feature-title">Real Business Scenarios</h3>
+              <p className="feature-description">
+                Practice with actual business tasks: budget analysis, risk assessment,
+                customer communication, and strategic planning.
+              </p>
             </div>
+
             <div className="feature-card card">
-              <div className="feature-icon">🎯</div>
-              <h3>Practical Skills</h3>
-              <p>Learn techniques you can apply immediately to your daily work</p>
+              <div className="feature-icon-wrapper feature-icon-navy">
+                <svg className="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h3 className="feature-title">Instant AI Feedback</h3>
+              <p className="feature-description">
+                Get detailed, personalized feedback on every prompt you write.
+                Learn what works and why, powered by Claude AI.
+              </p>
             </div>
+
             <div className="feature-card card">
-              <div className="feature-icon">⚡</div>
-              <h3>Self-Paced Learning</h3>
-              <p>Complete scenarios at your own speed, 10-15 minutes each</p>
+              <div className="feature-icon-wrapper feature-icon-teal">
+                <svg className="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              </div>
+              <h3 className="feature-title">Professional Certification</h3>
+              <p className="feature-description">
+                Earn a verified certificate upon completion.
+                Showcase your AI skills on LinkedIn and in your professional network.
+              </p>
             </div>
           </div>
         </div>
@@ -73,28 +110,70 @@ const LandingPage = () => {
       {/* How It Works */}
       <section className="how-it-works">
         <div className="container-sm">
-          <h2>How It Works</h2>
+          <div className="section-header">
+            <h2 className="section-title">Simple, Focused Learning</h2>
+            <p className="section-subtitle">Master prompt engineering in three clear steps</p>
+          </div>
           <div className="steps">
             <div className="step">
               <div className="step-number">1</div>
               <div className="step-content">
-                <h3>Choose a Scenario</h3>
-                <p>Select from 5 realistic business scenarios</p>
+                <h3 className="step-title">Choose Your Scenario</h3>
+                <p className="step-description">
+                  Select from 50 business scenarios across 4 modules:
+                  Foundation, Intermediate, Advanced, and Expert.
+                </p>
               </div>
             </div>
+
+            <div className="step-connector"></div>
+
             <div className="step">
               <div className="step-number">2</div>
               <div className="step-content">
-                <h3>Write Your Prompt</h3>
-                <p>Practice crafting effective prompts with guidance</p>
+                <h3 className="step-title">Write Your Prompt</h3>
+                <p className="step-description">
+                  Practice in a distraction-free environment with clear context
+                  and success criteria for each task.
+                </p>
               </div>
             </div>
+
+            <div className="step-connector"></div>
+
             <div className="step">
               <div className="step-number">3</div>
               <div className="step-content">
-                <h3>Get Feedback</h3>
-                <p>Learn what makes prompts effective</p>
+                <h3 className="step-title">Get Expert Feedback</h3>
+                <p className="step-description">
+                  Receive detailed analysis with strengths, improvements,
+                  and an improved example of your prompt.
+                </p>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Social Proof */}
+      <section className="social-proof">
+        <div className="container">
+          <div className="stats-grid">
+            <div className="stat-card">
+              <div className="stat-number">50+</div>
+              <div className="stat-label">Business Scenarios</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-number">4</div>
+              <div className="stat-label">Skill Modules</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-number">10+</div>
+              <div className="stat-label">Achievement Badges</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-number">100%</div>
+              <div className="stat-label">Practical Focus</div>
             </div>
           </div>
         </div>
@@ -103,15 +182,19 @@ const LandingPage = () => {
       {/* Final CTA */}
       <section className="final-cta">
         <div className="container-sm">
-          <div className="cta-box">
-            <h2>Ready to get started?</h2>
-            <p>Join business leaders learning to work more effectively with AI</p>
+          <div className="cta-card card-navy">
+            <h2 className="cta-title">Ready to Level Up Your AI Skills?</h2>
+            <p className="cta-description">
+              Join business professionals mastering prompt engineering.
+              Start learning today with practical, ROI-focused training.
+            </p>
             <button
               className="btn btn-primary btn-lg"
               onClick={handleLogin}
             >
               Start Learning Free
             </button>
+            <p className="cta-note">Get started in under 60 seconds</p>
           </div>
         </div>
       </section>
@@ -119,216 +202,348 @@ const LandingPage = () => {
       <style jsx>{`
         .landing-page {
           min-height: 100vh;
-          background: var(--bg-page);
+          background: linear-gradient(180deg,
+            var(--gray-900) 0%,
+            var(--navy-900) 100%
+          );
         }
 
-        /* Hero Section */
-        .hero {
-          background: var(--white);
-          padding: var(--space-4) 0 var(--space-16) 0;
-          border-bottom: 1px solid var(--gray-200);
-        }
-
+        /* Navigation */
         .nav {
+          position: sticky;
+          top: 0;
+          background: rgba(26, 26, 26, 0.8);
+          backdrop-filter: blur(12px);
+          border-bottom: 1px solid var(--border-color);
+          padding: var(--space-4) 0;
+          z-index: var(--z-sticky);
+        }
+
+        .nav-content {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: var(--space-12);
         }
 
         .logo {
           font-size: var(--text-2xl);
           font-weight: var(--font-bold);
-          color: var(--primary);
+          background: linear-gradient(135deg, var(--orange-500), var(--orange-600));
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
           margin: 0;
+        }
+
+        /* Hero Section */
+        .hero {
+          padding: var(--space-20) 0;
+          position: relative;
         }
 
         .hero-content {
           text-align: center;
-          max-width: 800px;
+          max-width: 900px;
           margin: 0 auto;
         }
 
-        .hero-content h1 {
-          font-size: var(--text-4xl);
+        .hero-badge {
           margin-bottom: var(--space-6);
+          animation: slideDown 0.6s ease-out;
+        }
+
+        .hero-title {
+          font-size: var(--text-5xl);
+          font-weight: var(--font-bold);
+          line-height: var(--leading-tight);
           color: var(--text-primary);
-          line-height: 1.2;
+          margin: 0 0 var(--space-6) 0;
+          animation: slideUp 0.6s ease-out 0.1s both;
         }
 
-        .subtitle {
+        .hero-gradient {
+          background: linear-gradient(135deg, var(--orange-500), var(--orange-400));
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+
+        .hero-subtitle {
           font-size: var(--text-xl);
+          line-height: var(--leading-relaxed);
           color: var(--text-secondary);
-          margin-bottom: var(--space-8);
-          line-height: 1.6;
+          margin: 0 auto var(--space-8);
+          max-width: 700px;
+          animation: slideUp 0.6s ease-out 0.2s both;
         }
 
-        .cta-buttons {
-          margin-bottom: var(--space-3);
+        .hero-cta {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: var(--space-3);
+          animation: slideUp 0.6s ease-out 0.3s both;
         }
 
-        .cta-note {
+        .hero-note {
           font-size: var(--text-sm);
           color: var(--text-tertiary);
+          margin: 0;
         }
 
         /* Features Section */
         .features {
-          padding: var(--space-16) 0;
-          background: var(--bg-page);
+          padding: var(--space-20) 0;
+          background: var(--gray-900);
         }
 
-        .features h2 {
+        .section-header {
           text-align: center;
-          font-size: var(--text-3xl);
           margin-bottom: var(--space-12);
+        }
+
+        .section-title {
+          font-size: var(--text-4xl);
+          font-weight: var(--font-bold);
           color: var(--text-primary);
+          margin: 0 0 var(--space-4) 0;
+        }
+
+        .section-subtitle {
+          font-size: var(--text-lg);
+          color: var(--text-secondary);
+          margin: 0;
         }
 
         .feature-grid {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
           gap: var(--space-6);
         }
 
         .feature-card {
           text-align: center;
-          padding: var(--space-8) var(--space-6);
+          padding: var(--space-8);
+          transition: all var(--transition-base);
+        }
+
+        .feature-card:hover {
+          transform: translateY(-4px);
+        }
+
+        .feature-icon-wrapper {
+          width: 64px;
+          height: 64px;
+          margin: 0 auto var(--space-5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: var(--accent-light);
+          border-radius: var(--border-radius-lg);
+          color: var(--accent-primary);
+        }
+
+        .feature-icon-navy {
+          background: var(--navy-100);
+          color: var(--navy-400);
+        }
+
+        .feature-icon-teal {
+          background: var(--teal-100);
+          color: var(--teal-500);
         }
 
         .feature-icon {
-          font-size: 3rem;
-          margin-bottom: var(--space-4);
+          width: 32px;
+          height: 32px;
         }
 
-        .feature-card h3 {
+        .feature-title {
           font-size: var(--text-xl);
-          margin-bottom: var(--space-3);
+          font-weight: var(--font-semibold);
           color: var(--text-primary);
+          margin: 0 0 var(--space-3) 0;
         }
 
-        .feature-card p {
+        .feature-description {
           font-size: var(--text-base);
+          line-height: var(--leading-relaxed);
           color: var(--text-secondary);
-          line-height: 1.6;
           margin: 0;
         }
 
         /* How It Works */
         .how-it-works {
-          padding: var(--space-16) 0;
-          background: var(--white);
-        }
-
-        .how-it-works h2 {
-          text-align: center;
-          font-size: var(--text-3xl);
-          margin-bottom: var(--space-12);
-          color: var(--text-primary);
+          padding: var(--space-20) 0;
+          background: linear-gradient(180deg,
+            var(--gray-900) 0%,
+            var(--navy-900) 100%
+          );
         }
 
         .steps {
           display: flex;
           flex-direction: column;
-          gap: var(--space-8);
+          gap: var(--space-6);
+          max-width: 600px;
+          margin: 0 auto;
         }
 
         .step {
           display: flex;
-          gap: var(--space-6);
+          gap: var(--space-5);
           align-items: flex-start;
         }
 
         .step-number {
+          flex-shrink: 0;
           width: 48px;
           height: 48px;
-          background: var(--primary);
-          color: var(--white);
-          border-radius: var(--radius-full);
           display: flex;
           align-items: center;
           justify-content: center;
+          background: linear-gradient(135deg, var(--orange-600), var(--orange-500));
+          color: var(--text-on-orange);
+          border-radius: var(--border-radius-full);
           font-size: var(--text-xl);
           font-weight: var(--font-bold);
-          flex-shrink: 0;
+          box-shadow: var(--shadow-md);
         }
 
-        .step-content h3 {
+        .step-connector {
+          width: 2px;
+          height: var(--space-6);
+          background: linear-gradient(180deg,
+            var(--orange-600),
+            transparent
+          );
+          margin: 0 0 0 23px;
+        }
+
+        .step-content {
+          flex: 1;
+        }
+
+        .step-title {
           font-size: var(--text-xl);
-          margin-bottom: var(--space-2);
+          font-weight: var(--font-semibold);
           color: var(--text-primary);
+          margin: 0 0 var(--space-2) 0;
         }
 
-        .step-content p {
+        .step-description {
           font-size: var(--text-base);
+          line-height: var(--leading-relaxed);
           color: var(--text-secondary);
           margin: 0;
-          line-height: 1.6;
+        }
+
+        /* Social Proof */
+        .social-proof {
+          padding: var(--space-16) 0;
+          background: var(--gray-900);
+        }
+
+        .stats-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: var(--space-6);
+        }
+
+        .stat-card {
+          text-align: center;
+          padding: var(--space-6);
+        }
+
+        .stat-number {
+          font-size: var(--text-5xl);
+          font-weight: var(--font-bold);
+          background: linear-gradient(135deg, var(--orange-500), var(--orange-400));
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          margin-bottom: var(--space-2);
+        }
+
+        .stat-label {
+          font-size: var(--text-base);
+          color: var(--text-secondary);
         }
 
         /* Final CTA */
         .final-cta {
-          padding: var(--space-16) 0;
-          background: var(--bg-page);
+          padding: var(--space-20) 0;
         }
 
-        .cta-box {
+        .cta-card {
           text-align: center;
-          padding: var(--space-12) var(--space-8);
-          background: var(--primary);
-          border-radius: var(--radius-xl);
-          color: var(--white);
+          padding: var(--space-12);
+          background: var(--bg-navy);
+          border: 1px solid var(--navy-600);
+          box-shadow: var(--shadow-xl);
         }
 
-        .cta-box h2 {
-          font-size: var(--text-3xl);
-          margin-bottom: var(--space-4);
-          color: var(--white);
+        .cta-title {
+          font-size: var(--text-4xl);
+          font-weight: var(--font-bold);
+          color: var(--text-primary);
+          margin: 0 0 var(--space-4) 0;
         }
 
-        .cta-box p {
+        .cta-description {
           font-size: var(--text-lg);
-          margin-bottom: var(--space-8);
-          opacity: 0.9;
+          line-height: var(--leading-relaxed);
+          color: var(--text-secondary);
+          margin: 0 0 var(--space-8) 0;
+          max-width: 600px;
+          margin-left: auto;
+          margin-right: auto;
         }
 
-        .cta-box .btn {
-          background: var(--white);
-          color: var(--primary);
-          border-color: var(--white);
+        .cta-note {
+          font-size: var(--text-sm);
+          color: var(--text-tertiary);
+          margin-top: var(--space-3);
         }
 
-        .cta-box .btn:hover {
-          background: var(--gray-50);
-          border-color: var(--gray-50);
-        }
-
-        /* Responsive */
+        /* Responsive Design */
         @media (max-width: 768px) {
-          .hero-content h1 {
+          .hero {
+            padding: var(--space-12) 0;
+          }
+
+          .hero-title {
             font-size: var(--text-3xl);
           }
 
-          .subtitle {
+          .hero-subtitle {
             font-size: var(--text-lg);
+          }
+
+          .section-title {
+            font-size: var(--text-3xl);
           }
 
           .feature-grid {
             grid-template-columns: 1fr;
-            gap: var(--space-4);
           }
 
-          .step {
-            flex-direction: column;
-            gap: var(--space-3);
+          .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
           }
 
-          .cta-box {
-            padding: var(--space-8) var(--space-6);
-          }
-
-          .cta-box h2 {
+          .cta-title {
             font-size: var(--text-2xl);
+          }
+        }
+
+        @media (max-width: 480px) {
+          .hero-title {
+            font-size: var(--text-2xl);
+          }
+
+          .stats-grid {
+            grid-template-columns: 1fr;
           }
         }
       `}</style>
