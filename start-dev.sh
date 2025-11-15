@@ -1,10 +1,14 @@
 #!/bin/bash
 
+# Get the script directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+
 # Export environment variable for Vite
 export VITE_API_BASE_URL="http://localhost:3001/api"
 
 # Start backend in background
-cd backend && node server.js &
+(cd backend && node server.js) &
 BACKEND_PID=$!
 
 # Wait for backend to start
@@ -12,7 +16,6 @@ echo "Waiting for backend to start..."
 sleep 3
 
 # Start frontend (this will be the main process)
-cd ..
 echo "Starting frontend on port 5000..."
 npm run dev
 
