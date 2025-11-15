@@ -7,6 +7,7 @@ import scenarioRoutes from './routes/scenarios.js';
 import achievementRoutes from './routes/achievements.js';
 import certificateRoutes from './routes/certificates.js';
 import leaderboardRoutes from './routes/leaderboard.js';
+import usersRoutes from './routes/users.js';
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.get('/health', (req, res) => {
 });
 
 // API Routes
+app.use('/api/users', usersRoutes);
 app.use('/api/evaluate', evaluationRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/scenarios', scenarioRoutes);

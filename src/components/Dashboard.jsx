@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
 import { useNavigate } from 'react-router-dom'
-import { mockGetUserProgress, mockGetUserAchievements, getLevelName, getPointsForNextLevel, formatDuration, formatRelativeTime } from '../services/progressService'
-import { mockCheckCertificateEligibility, mockGenerateCertificate } from '../services/certificateService'
+import { getUserProgress, getUserAchievements, getLevelName, getPointsForNextLevel, formatDuration, formatRelativeTime } from '../services/progressService'
+import { checkCertificateEligibility, generateCertificate } from '../services/certificateService'
+import { syncUser } from '../services/userService'
 import AchievementBadge from './AchievementBadge'
 import SkillRadarChart from './SkillRadarChart'
 import Certificate from './Certificate'
 import LoadingSpinner from './LoadingSpinner'
 
 const Dashboard = () => {
-  const { user, logout } = useAuth0()
+  const { user, logout, getAccessTokenSilently } = useAuth0()
   const navigate = useNavigate()
 
   const [loading, setLoading] = useState(true)
+  const [dbUser, setDbUser] = useState(null)
   const [progressData, setProgressData] = useState(null)
   const [achievements, setAchievements] = useState([])
   const [showAllAchievements, setShowAllAchievements] = useState(false)
@@ -20,33 +22,58 @@ const Dashboard = () => {
   const [userCertificate, setUserCertificate] = useState(null)
   const [generatingCertificate, setGeneratingCertificate] = useState(false)
   const [showCertificate, setShowCertificate] = useState(false)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     loadDashboardData()
-  }, [])
+  }, [user])
 
   const loadDashboardData = async () => {
     try {
       setLoading(true)
-      // Load progress and achievements (currently using mock)
+      setError(null)
+
+      // Get access token (or use empty string for testing without Auth0)
+      let token = ''
+      try {
+        token = await getAccessTokenSilently()
+      } catch (err) {
+        console.log('No Auth0 token, proceeding without authentication')
+      }
+
+      // First, sync user to get database ID
+      const userSyncResult = await syncUser(user, token)
+      if (!userSyncResult.success) {
+        throw new Error('Failed to sync user: ' + userSyncResult.error)
+      }
+
+      const databaseUser = userSyncResult.user
+      setDbUser(databaseUser)
+
+      // Load progress and achievements using database user ID
       const [progressResult, achievementsResult] = await Promise.all([
-        mockGetUserProgress(user?.sub),
-        mockGetUserAchievements(user?.sub)
+        getUserProgress(databaseUser.id, token),
+        getUserAchievements(databaseUser.id, token)
       ])
 
       if (progressResult.success) {
         setProgressData(progressResult)
 
         // Check certificate eligibility
-        const eligibilityResult = await mockCheckCertificateEligibility(user?.sub, progressResult.progress)
-        setCertificateEligibility(eligibilityResult)
+        try {
+          const eligibilityResult = await checkCertificateEligibility(databaseUser.id, progressResult.progress, token)
+          setCertificateEligibility(eligibilityResult)
+        } catch (certError) {
+          console.log('Certificate check not available:', certError.message)
+        }
       }
 
       if (achievementsResult.success) {
-        setAchievements(achievementsResult.achievements)
+        setAchievements(achievementsResult.achievements || [])
       }
     } catch (error) {
       console.error('Error loading dashboard data:', error)
+      setError(error.message || 'Failed to load dashboard data')
     } finally {
       setLoading(false)
     }
@@ -55,8 +82,15 @@ const Dashboard = () => {
   const handleGenerateCertificate = async () => {
     try {
       setGeneratingCertificate(true)
-      const result = await mockGenerateCertificate(
-        user?.sub,
+      let token = ''
+      try {
+        token = await getAccessTokenSilently()
+      } catch (err) {
+        console.log('No Auth0 token')
+      }
+
+      const result = await generateCertificate(
+        dbUser.id,
         user?.name,
         progressData?.progress?.averageScore || 85
       )
