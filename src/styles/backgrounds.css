@@ -1,0 +1,499 @@
+/**
+ * Backgrounds & Atmosphere
+ *
+ * Layered gradients, textures, and patterns for depth
+ * No flat colors - everything has atmosphere
+ */
+
+/* ============================================
+   HERO BACKGROUNDS - Light Mode
+   ============================================ */
+
+.hero-bg-light {
+  background:
+    /* Orange radial glow */
+    radial-gradient(
+      circle at 20% 30%,
+      rgba(233, 81, 10, 0.08) 0%,
+      transparent 50%
+    ),
+    /* Acid radial glow */
+    radial-gradient(
+      circle at 80% 70%,
+      rgba(212, 255, 0, 0.06) 0%,
+      transparent 50%
+    ),
+    /* Base gradient */
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #f5f5f5 100%
+    );
+}
+
+/* Film grain texture overlay */
+.hero-bg-light::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity: 0.5;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+/* ============================================
+   HERO BACKGROUNDS - Dark Mode
+   ============================================ */
+
+@media (prefers-color-scheme: dark) {
+  .hero-bg-light {
+    background:
+      /* Orange radial glow - more intense */
+      radial-gradient(
+        circle at 20% 30%,
+        rgba(233, 81, 10, 0.15) 0%,
+        transparent 60%
+      ),
+      /* Acid radial glow - more intense */
+      radial-gradient(
+        circle at 80% 70%,
+        rgba(212, 255, 0, 0.1) 0%,
+        transparent 60%
+      ),
+      /* Base gradient */
+      linear-gradient(
+        180deg,
+        #1a1a1a 0%,
+        #0f0f0f 100%
+      );
+  }
+
+  .hero-bg-light::before {
+    opacity: 0.8;
+  }
+}
+
+/* ============================================
+   SECTION BACKGROUNDS
+   ============================================ */
+
+/* Clean white section with subtle texture */
+.section-clean {
+  background-color: var(--white);
+  position: relative;
+}
+
+@media (prefers-color-scheme: dark) {
+  .section-clean {
+    background-color: var(--gray-950);
+  }
+}
+
+/* Subtle gray section */
+.section-gray {
+  background-color: var(--gray-50);
+  position: relative;
+}
+
+@media (prefers-color-scheme: dark) {
+  .section-gray {
+    background-color: var(--black);
+  }
+}
+
+/* Gradient section with diagonal accent */
+.section-gradient {
+  background:
+    linear-gradient(
+      135deg,
+      var(--bg-primary) 0%,
+      var(--bg-secondary) 100%
+    );
+  position: relative;
+}
+
+/* ============================================
+   CARD BACKGROUNDS
+   ============================================ */
+
+/* Base card - white with subtle shadow */
+.card-base {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--duration-base) var(--ease-out);
+}
+
+.card-base:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--gray-400);
+  transform: translateY(-2px);
+}
+
+@media (prefers-color-scheme: dark) {
+  .card-base {
+    background-color: var(--black);
+    border-color: var(--gray-800);
+  }
+
+  .card-base:hover {
+    background-color: var(--gray-900);
+    border-color: var(--gray-700);
+  }
+}
+
+/* Card with colored top border */
+.card-accent-orange {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-top: 4px solid var(--orange);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--duration-base) var(--ease-out);
+}
+
+.card-accent-orange:hover {
+  box-shadow: var(--shadow-orange);
+  border-top-color: var(--orange-500);
+  transform: translateY(-4px);
+}
+
+.card-accent-acid {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-top: 4px solid var(--acid);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--duration-base) var(--ease-out);
+}
+
+.card-accent-acid:hover {
+  box-shadow: var(--shadow-acid);
+  border-top-color: var(--acid-600);
+  transform: translateY(-4px);
+}
+
+/* Card with gradient glow (dark mode premium) */
+@media (prefers-color-scheme: dark) {
+  .card-glow-orange {
+    position: relative;
+    background-color: var(--black);
+    border: 1px solid var(--gray-800);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .card-glow-orange::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-lg);
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      var(--orange) 0%,
+      transparent 50%,
+      var(--acid) 100%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity var(--duration-base) var(--ease-out);
+  }
+
+  .card-glow-orange:hover::before {
+    opacity: 1;
+  }
+}
+
+/* ============================================
+   GEOMETRIC PATTERNS
+   ============================================ */
+
+/* Dot grid pattern */
+.pattern-dots {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    var(--gray-200) 1px,
+    transparent 0
+  );
+  background-size: 24px 24px;
+  background-position: 0 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .pattern-dots {
+    background-image: radial-gradient(
+      circle at 1px 1px,
+      var(--gray-800) 1px,
+      transparent 0
+    );
+  }
+}
+
+/* Grid pattern */
+.pattern-grid {
+  background-image:
+    linear-gradient(var(--gray-200) 1px, transparent 1px),
+    linear-gradient(90deg, var(--gray-200) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .pattern-grid {
+    background-image:
+      linear-gradient(var(--gray-800) 1px, transparent 1px),
+      linear-gradient(90deg, var(--gray-800) 1px, transparent 1px);
+  }
+}
+
+/* Diagonal lines pattern */
+.pattern-diagonal {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    var(--gray-100) 10px,
+    var(--gray-100) 11px
+  );
+}
+
+@media (prefers-color-scheme: dark) {
+  .pattern-diagonal {
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      var(--gray-850) 10px,
+      var(--gray-850) 11px
+    );
+  }
+}
+
+/* ============================================
+   MESH GRADIENTS (Apple-style organic)
+   ============================================ */
+
+.mesh-gradient-orange {
+  background:
+    radial-gradient(at 20% 30%, rgba(233, 81, 10, 0.15) 0%, transparent 50%),
+    radial-gradient(at 80% 70%, rgba(233, 81, 10, 0.1) 0%, transparent 50%),
+    radial-gradient(at 50% 50%, rgba(212, 255, 0, 0.08) 0%, transparent 50%),
+    var(--bg-primary);
+}
+
+.mesh-gradient-acid {
+  background:
+    radial-gradient(at 30% 20%, rgba(212, 255, 0, 0.12) 0%, transparent 50%),
+    radial-gradient(at 70% 80%, rgba(212, 255, 0, 0.08) 0%, transparent 50%),
+    radial-gradient(at 50% 50%, rgba(233, 81, 10, 0.05) 0%, transparent 50%),
+    var(--bg-primary);
+}
+
+/* ============================================
+   GLASS MORPHISM
+   ============================================ */
+
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(34, 34, 34, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  .glass {
+    background: rgba(34, 34, 34, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* ============================================
+   TEXTURE OVERLAYS
+   ============================================ */
+
+/* Paper texture for certificates */
+.texture-paper {
+  background-color: var(--white);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='paper'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.04' numOctaves='5' result='noise'/%3E%3CfeDiffuseLighting in='noise' lighting-color='%23fff' surfaceScale='2'%3E%3CfeDistantLight azimuth='45' elevation='60'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paper)' opacity='0.5'/%3E%3C/svg%3E");
+  background-blend-mode: multiply;
+}
+
+/* Noise texture for depth */
+.texture-noise {
+  position: relative;
+}
+
+.texture-noise::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+@media (prefers-color-scheme: dark) {
+  .texture-noise::before {
+    opacity: 0.15;
+  }
+}
+
+/* ============================================
+   GRADIENT OVERLAYS
+   ============================================ */
+
+/* Subtle vignette */
+.vignette {
+  position: relative;
+}
+
+.vignette::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    transparent 0%,
+    rgba(0, 0, 0, 0.1) 100%
+  );
+  pointer-events: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .vignette::after {
+    background: radial-gradient(
+      circle at center,
+      transparent 0%,
+      rgba(0, 0, 0, 0.3) 100%
+    );
+  }
+}
+
+/* Spotlight effect (follows composition) */
+.spotlight {
+  position: relative;
+}
+
+.spotlight::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 20%,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 60%
+  );
+  pointer-events: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .spotlight::before {
+    background: radial-gradient(
+      ellipse at 50% 20%,
+      rgba(255, 255, 255, 0.05) 0%,
+      transparent 60%
+    );
+  }
+}
+
+/* ============================================
+   ACCENT BACKGROUNDS (full sections)
+   ============================================ */
+
+/* Orange accent section */
+.bg-orange {
+  background: linear-gradient(
+    135deg,
+    var(--orange-700) 0%,
+    var(--orange) 100%
+  );
+  color: var(--white);
+}
+
+/* Acid accent section */
+.bg-acid {
+  background: linear-gradient(
+    135deg,
+    var(--acid-600) 0%,
+    var(--acid) 100%
+  );
+  color: var(--black);
+}
+
+/* Black accent section */
+.bg-black {
+  background-color: var(--black);
+  color: var(--white);
+}
+
+/* ============================================
+   BORDER GLOW EFFECTS
+   ============================================ */
+
+.border-glow-orange {
+  border: 1px solid var(--orange);
+  box-shadow: 0 0 20px rgba(233, 81, 10, 0.2),
+              inset 0 0 20px rgba(233, 81, 10, 0.1);
+}
+
+.border-glow-acid {
+  border: 1px solid var(--acid);
+  box-shadow: 0 0 20px rgba(212, 255, 0, 0.2),
+              inset 0 0 20px rgba(212, 255, 0, 0.1);
+}
+
+/* ============================================
+   ABSTRACT SHAPES (decorative elements)
+   ============================================ */
+
+.shape-circle-orange {
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    rgba(233, 81, 10, 0.2) 0%,
+    transparent 70%
+  );
+  filter: blur(60px);
+  position: absolute;
+  pointer-events: none;
+}
+
+.shape-circle-acid {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    rgba(212, 255, 0, 0.15) 0%,
+    transparent 70%
+  );
+  filter: blur(50px);
+  position: absolute;
+  pointer-events: none;
+}
+
+/* ============================================
+   RESPONSIVE PATTERNS
+   ============================================ */
+
+@media (max-width: 768px) {
+  /* Reduce pattern complexity on mobile */
+  .pattern-dots,
+  .pattern-grid,
+  .pattern-diagonal {
+    opacity: 0.5;
+  }
+
+  /* Reduce blur effects for performance */
+  .shape-circle-orange,
+  .shape-circle-acid {
+    filter: blur(30px);
+  }
+}

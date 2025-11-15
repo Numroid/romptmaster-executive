@@ -1,0 +1,584 @@
+/**
+ * Animation Library - Kinetic Performance
+ *
+ * Orchestrated motion for editorial impact
+ * CSS-only animations with purposeful choreography
+ */
+
+/* ============================================
+   KEYFRAME ANIMATIONS
+   ============================================ */
+
+/* Fade In */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Reveal Up - Vertical entrance with fade */
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Reveal Down */
+@keyframes reveal-down {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scale In - Pop entrance */
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Bounce In - Springy entrance */
+@keyframes bounce-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Clip Reveal - Word-by-word text reveal */
+@keyframes clip-reveal {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* Shimmer - Gradient sweep effect */
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+/* Shimmer Alt - For progress bars */
+@keyframes shimmer-progress {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Glow Pulse - Breathing light effect */
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(233, 81, 10, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(233, 81, 10, 0.6);
+  }
+}
+
+/* Glow Pulse Acid */
+@keyframes glow-pulse-acid {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(212, 255, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(212, 255, 0, 0.6);
+  }
+}
+
+/* Gentle Float - Subtle vertical movement */
+@keyframes gentle-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* Pulse - Opacity breathing */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* Spin - Continuous rotation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Celebration - Achievement unlock */
+@keyframes celebration {
+  0% {
+    transform: scale(0.5) rotate(0deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2) rotate(180deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(360deg);
+    opacity: 1;
+  }
+}
+
+/* Border Draw - Animated border reveal */
+@keyframes border-draw {
+  0% {
+    stroke-dashoffset: 1000;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Number Counter - Count up effect (handled with JS, this is visual) */
+@keyframes number-pop {
+  0% {
+    transform: scale(1.3);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Underline Grow - Left to right underline */
+@keyframes underline-grow {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+/* Tilt - Subtle rotation on hover */
+@keyframes tilt {
+  0%, 100% {
+    transform: perspective(1000px) rotateY(0deg);
+  }
+  50% {
+    transform: perspective(1000px) rotateY(2deg);
+  }
+}
+
+/* Slide In Right */
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Slide In Left */
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ============================================
+   UTILITY CLASSES - ENTRANCE ANIMATIONS
+   ============================================ */
+
+.animate-fade-in {
+  animation: fade-in 600ms var(--ease-out) backwards;
+}
+
+.animate-reveal-up {
+  animation: reveal-up 500ms var(--ease-out) backwards;
+}
+
+.animate-reveal-down {
+  animation: reveal-down 500ms var(--ease-out) backwards;
+}
+
+.animate-scale-in {
+  animation: scale-in 400ms var(--ease-spring) backwards;
+}
+
+.animate-bounce-in {
+  animation: bounce-in 600ms var(--ease-bounce) backwards;
+}
+
+.animate-slide-right {
+  animation: slide-in-right 400ms var(--ease-out) backwards;
+}
+
+.animate-slide-left {
+  animation: slide-in-left 400ms var(--ease-out) backwards;
+}
+
+/* ============================================
+   STAGGERED ENTRANCE DELAYS
+   ============================================ */
+
+.stagger-1 { animation-delay: 100ms; }
+.stagger-2 { animation-delay: 200ms; }
+.stagger-3 { animation-delay: 300ms; }
+.stagger-4 { animation-delay: 400ms; }
+.stagger-5 { animation-delay: 500ms; }
+.stagger-6 { animation-delay: 600ms; }
+.stagger-7 { animation-delay: 700ms; }
+.stagger-8 { animation-delay: 800ms; }
+.stagger-9 { animation-delay: 900ms; }
+.stagger-10 { animation-delay: 1000ms; }
+.stagger-11 { animation-delay: 1100ms; }
+.stagger-12 { animation-delay: 1200ms; }
+
+/* ============================================
+   CONTINUOUS ANIMATIONS
+   ============================================ */
+
+.animate-float {
+  animation: gentle-float 3s ease-in-out infinite;
+}
+
+.animate-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+.animate-glow {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.animate-glow-acid {
+  animation: glow-pulse-acid 2s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* ============================================
+   HOVER & INTERACTION EFFECTS
+   ============================================ */
+
+/* Lift on hover */
+.hover-lift {
+  transition: transform var(--duration-base) var(--ease-out),
+              box-shadow var(--duration-base) var(--ease-out);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Lift with scale */
+.hover-lift-scale {
+  transition: transform var(--duration-base) var(--ease-spring),
+              box-shadow var(--duration-base) var(--ease-out);
+}
+
+.hover-lift-scale:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: var(--shadow-orange);
+}
+
+/* Glow on hover */
+.hover-glow {
+  transition: box-shadow var(--duration-base) var(--ease-out);
+}
+
+.hover-glow:hover {
+  box-shadow: var(--shadow-orange);
+}
+
+.hover-glow-acid:hover {
+  box-shadow: var(--shadow-acid);
+}
+
+/* Tilt effect */
+.hover-tilt {
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.hover-tilt:hover {
+  transform: perspective(1000px) rotateY(2deg) rotateX(2deg);
+}
+
+/* Border intensity */
+.hover-border {
+  transition: border-color var(--duration-base) var(--ease-out);
+}
+
+.hover-border:hover {
+  border-color: var(--orange-500);
+}
+
+/* Scale effect */
+.hover-scale {
+  transition: transform var(--duration-base) var(--ease-spring);
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+/* Press effect for buttons */
+.press-effect {
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.press-effect:active {
+  transform: scale(0.98);
+}
+
+/* ============================================
+   PAGE LOAD ORCHESTRATION
+   Landing page 3-act structure
+   ============================================ */
+
+/* Act 1: Background & Structure (0-600ms) */
+.page-entrance-bg {
+  animation: fade-in 600ms var(--ease-out) backwards;
+}
+
+.page-entrance-nav {
+  animation: reveal-down 500ms var(--ease-out) 100ms backwards;
+}
+
+/* Act 2: Hero Content (400-1400ms) */
+.hero-badge-entrance {
+  animation: scale-in 400ms var(--ease-spring) 400ms backwards;
+}
+
+.hero-title-entrance {
+  animation: reveal-up 600ms var(--ease-out) 600ms backwards;
+}
+
+.hero-subtitle-entrance {
+  animation: reveal-up 500ms var(--ease-out) 900ms backwards;
+}
+
+.hero-cta-entrance {
+  animation: bounce-in 600ms var(--ease-bounce) 1100ms backwards;
+}
+
+/* Act 3: Content Cascade (1200ms+) */
+.content-cascade {
+  animation: reveal-up 500ms var(--ease-out) backwards;
+}
+
+.content-cascade:nth-child(1) { animation-delay: 1200ms; }
+.content-cascade:nth-child(2) { animation-delay: 1350ms; }
+.content-cascade:nth-child(3) { animation-delay: 1500ms; }
+.content-cascade:nth-child(4) { animation-delay: 1650ms; }
+.content-cascade:nth-child(5) { animation-delay: 1800ms; }
+.content-cascade:nth-child(6) { animation-delay: 1950ms; }
+
+/* ============================================
+   LOADING STATES
+   ============================================ */
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-secondary) 0%,
+    var(--bg-tertiary) 50%,
+    var(--bg-secondary) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-md);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--bg-tertiary);
+  border-top-color: var(--orange);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* ============================================
+   PROGRESS BAR ANIMATIONS
+   ============================================ */
+
+.progress-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+  animation: shimmer-progress 2s infinite;
+}
+
+/* ============================================
+   ACHIEVEMENT UNLOCK ANIMATION
+   ============================================ */
+
+.achievement-unlock {
+  animation: celebration 800ms var(--ease-bounce) forwards;
+}
+
+/* Confetti-like particles (CSS only) */
+@keyframes confetti-1 {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100px) translateX(-30px) rotate(180deg);
+    opacity: 0;
+  }
+}
+
+@keyframes confetti-2 {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-120px) translateX(40px) rotate(-180deg);
+    opacity: 0;
+  }
+}
+
+@keyframes confetti-3 {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-90px) translateX(10px) rotate(270deg);
+    opacity: 0;
+  }
+}
+
+/* ============================================
+   REDUCED MOTION OVERRIDE
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  /* Disable all animations except opacity */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+  }
+
+  /* Keep critical opacity transitions */
+  .fade-in,
+  .animate-fade-in {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+
+  /* Disable transforms */
+  .hover-lift:hover,
+  .hover-lift-scale:hover,
+  .hover-tilt:hover,
+  .hover-scale:hover {
+    transform: none !important;
+  }
+}
+
+/* ============================================
+   PERFORMANCE OPTIMIZATIONS
+   ============================================ */
+
+/* GPU acceleration for animated elements */
+.will-animate {
+  will-change: transform, opacity;
+}
+
+/* Limit will-change to hover state only */
+.hover-will-change {
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.hover-will-change:hover {
+  will-change: transform;
+}
+
+.hover-will-change:not(:hover) {
+  will-change: auto;
+}
