@@ -1,7 +1,20 @@
-/* Import PromptMaster Brand Design System */
-@import './styles/brand-theme.css';
+/**
+ * PromptMaster Executive - Main Stylesheet
+ * Editorial Performance Aesthetic
+ */
 
-/* Legacy loading component - minimal styling */
+/* Import Design System - Order matters */
+@import './styles/design-system.css';
+@import './styles/typography.css';
+@import './styles/animations.css';
+@import './styles/backgrounds.css';
+@import './styles/components.css';
+
+/* ============================================
+   UTILITY COMPONENTS
+   ============================================ */
+
+/* Loading component */
 .loading {
   display: flex;
   justify-content: center;
@@ -9,4 +22,90 @@
   min-height: 200px;
   font-size: var(--text-lg);
   color: var(--text-secondary);
+}
+
+/* Landing page specific */
+.landing-page {
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+}
+
+/* Features section */
+.features {
+  padding: var(--spacing-20) 0;
+  position: relative;
+}
+
+/* Dashboard specific */
+.dashboard {
+  padding: var(--spacing-8) 0;
+  min-height: 100vh;
+}
+
+/* Scenario cards */
+.scenario-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-top: 4px solid var(--orange);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+  transition: all var(--duration-base) var(--ease-out);
+  cursor: pointer;
+}
+
+.scenario-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-orange);
+  border-top-color: var(--orange-500);
+}
+
+.scenario-card.completed {
+  border-top-color: var(--acid);
+}
+
+.scenario-card.completed:hover {
+  box-shadow: var(--shadow-acid);
+}
+
+/* Certificate specific */
+.certificate-container {
+  max-width: 800px;
+  margin: var(--spacing-12) auto;
+  padding: var(--spacing-8);
+}
+
+.certificate {
+  background-color: var(--white);
+  border: 8px solid var(--black);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-12);
+  position: relative;
+  box-shadow: var(--shadow-2xl);
+}
+
+@media (prefers-color-scheme: dark) {
+  .certificate {
+    background-color: var(--bg-card);
+  }
+}
+
+.certificate::before,
+.certificate::after {
+  content: '';
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background-color: var(--orange);
+}
+
+.certificate::before {
+  top: -4px;
+  left: -4px;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
+.certificate::after {
+  bottom: -4px;
+  right: -4px;
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
 }
